@@ -1,6 +1,6 @@
-package com.example.weather.model.data.current
+package com.example.weather.model.data.currentRemote
 
-data class Sys(
+data class System(
     val country: String,
     val id: Int,
     val sunrise: Int,

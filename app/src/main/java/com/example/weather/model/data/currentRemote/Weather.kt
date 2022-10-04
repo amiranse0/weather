@@ -1,4 +1,4 @@
-package com.example.weather.model.data.current
+package com.example.weather.model.data.currentRemote
 
 data class Weather(
     val description: String,
