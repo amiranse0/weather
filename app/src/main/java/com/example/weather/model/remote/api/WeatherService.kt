@@ -1,4 +1,4 @@
-package com.example.weather.model.remote
+package com.example.weather.model.remote.api
 
 import com.example.weather.model.data.current.CurrentResponse
 import okhttp3.OkHttpClient
@@ -15,7 +15,7 @@ interface WeatherService {
     ): CurrentResponse
 
     companion object{
-        fun create(): WeatherService{
+        fun create(): WeatherService {
             val logger = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
 
             val client = OkHttpClient.Builder()

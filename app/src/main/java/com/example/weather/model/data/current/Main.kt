@@ -1,10 +1,16 @@
 package com.example.weather.model.data.current
 
+import com.google.gson.annotations.SerializedName as SN
+
 data class Main(
-    val feels_like: Double,
+    @SN("feels_like")
+    val feelsLike: Double,
     val humidity: Int,
     val pressure: Int,
-    val temp: Double,
-    val temp_max: Double,
-    val temp_min: Double
+    @SN("temp")
+    val temperature: Double,
+    @SN("temp_max")
+    val maximumTemperature: Double,
+    @SN("temp_min")
+    val minimumTemperature: Double
 )
