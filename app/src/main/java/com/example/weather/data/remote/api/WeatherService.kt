@@ -1,6 +1,6 @@
-package com.example.weather.model.remote.api
+package com.example.weather.data.remote.api
 
-import com.example.weather.model.data.currentRemote.CurrentRemoteResponse
+import com.example.weather.data.model.currentRemote.CurrentRemoteResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

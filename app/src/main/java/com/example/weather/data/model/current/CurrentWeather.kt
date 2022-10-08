@@ -1,4 +1,4 @@
-package com.example.weather.model.data.current
+package com.example.weather.data.model.current
 
 data class CurrentWeather(
     private val latitude: Double,

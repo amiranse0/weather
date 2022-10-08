@@ -1,7 +1,7 @@
-package com.example.weather.model
+package com.example.weather.data
 
-import com.example.weather.model.data.current.CurrentWeather
-import com.example.weather.model.data.currentRemote.CurrentRemoteResponse
+import com.example.weather.data.model.current.CurrentWeather
+import com.example.weather.data.model.currentRemote.CurrentRemoteResponse
 
 object MapperCurrentWeather {
     fun responseToMain(response: CurrentRemoteResponse): CurrentWeather {

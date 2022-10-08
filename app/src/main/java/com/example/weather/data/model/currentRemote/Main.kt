@@ -1,4 +1,4 @@
-package com.example.weather.model.data.currentRemote
+package com.example.weather.data.model.currentRemote
 
 import com.google.gson.annotations.SerializedName as SN
 

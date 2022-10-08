@@ -1,4 +1,4 @@
-package com.example.weather.model.data.currentRemote
+package com.example.weather.data.model.currentRemote
 
 import com.google.gson.annotations.SerializedName as SN
 
@@ -11,7 +11,7 @@ data class CurrentRemoteResponse(
     val main: Main,
     val name: String,
     @SN("sys")
-    val system: System,
+    val system: SystemMetrics,
     @SN("timezone")
     val timeZone: Int,
     val visibility: Int,
