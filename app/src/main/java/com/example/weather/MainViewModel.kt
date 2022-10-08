@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
-    val currentWeatherStateFlow: MutableStateFlow<ResultOf<CurrentWeather>> = MutableStateFlow(ResultOf.Loading)
+    private val currentWeatherStateFlow: MutableStateFlow<ResultOf<CurrentWeather>> = MutableStateFlow(ResultOf.Loading)
 
     fun getCurrentWeather(query: Map<String, String>): Flow<ResultOf<CurrentWeather>>{
         viewModelScope.launch {

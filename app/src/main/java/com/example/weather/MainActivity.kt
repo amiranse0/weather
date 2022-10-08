@@ -2,7 +2,6 @@ package com.example.weather
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -11,9 +10,7 @@ import com.example.weather.data.ResultOf
 import com.example.weather.data.remote.api.ApiConfigurations
 import com.example.weather.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

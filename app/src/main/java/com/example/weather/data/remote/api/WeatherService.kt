@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.QueryMap
 
 interface WeatherService {
-    @GET("data/2.5/weather")
+    @GET("v1/forecast.json")
     suspend fun getCurrentWeather(
         @QueryMap query: Map<String, String>
     ): CurrentRemoteResponse
