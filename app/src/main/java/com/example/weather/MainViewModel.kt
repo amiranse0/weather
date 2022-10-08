@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather.data.Repository
 import com.example.weather.data.ResultOf
-import com.example.weather.data.model.current.CurrentWeather
+import com.example.weather.data.model.Weather
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,9 +14,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
-    private val currentWeatherStateFlow: MutableStateFlow<ResultOf<CurrentWeather>> = MutableStateFlow(ResultOf.Loading)
+    private val currentWeatherStateFlow: MutableStateFlow<ResultOf<Weather>> = MutableStateFlow(ResultOf.Loading)
 
-    fun getCurrentWeather(query: Map<String, String>): Flow<ResultOf<CurrentWeather>>{
+    fun getCurrentWeather(query: Map<String, String>): Flow<ResultOf<Weather>>{
         viewModelScope.launch {
             repository.getCurrentWeather(query).collect{
                 currentWeatherStateFlow.emit(it)

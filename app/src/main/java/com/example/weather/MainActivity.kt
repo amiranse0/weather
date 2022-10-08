@@ -33,8 +33,11 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 val query: Map<String, String> = mapOf(
-                    "q" to "tehran",
-                    "appid" to ApiConfigurations.API_KEY
+                    "q" to "Tehran",
+                    "key" to ApiConfigurations.API_KEY,
+                    "days" to "7",
+                    "aqi" to "no",
+                    "alerts" to "no"
                 )
                 viewModel.getCurrentWeather(query).collect {
                     when (it) {

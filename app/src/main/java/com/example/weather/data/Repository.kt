@@ -1,6 +1,6 @@
 package com.example.weather.data
 
-import com.example.weather.data.model.current.CurrentWeather
+import com.example.weather.data.model.Weather
 import com.example.weather.di.RemoteWeatherDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -10,7 +10,7 @@ class Repository @Inject constructor(
     @RemoteWeatherDataSource
     private val remoteDataSource: IDataSource
 ) {
-    suspend fun getCurrentWeather(query: Map<String,String>): Flow<ResultOf<CurrentWeather>> {
+    suspend fun getCurrentWeather(query: Map<String,String>): Flow<ResultOf<Weather>> {
         return flow {
             emit(ResultOf.Loading)
             try {

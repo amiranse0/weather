@@ -1,10 +1,8 @@
 package com.example.weather.data
 
-import com.example.weather.data.model.current.CurrentWeather
-import com.example.weather.data.model.currentRemote.CurrentRemoteResponse
 
 object MapperCurrentWeather {
-    fun responseToMain(response: CurrentRemoteResponse): CurrentWeather {
+    /*fun responseToMain(response: CurrentRemoteResponse): CurrentWeather {
         return response.let {
             CurrentWeather(
                 latitude = it.coordinate.latitude,
@@ -30,5 +28,5 @@ object MapperCurrentWeather {
                 nameOfCity = it.name
             )
         }
-    }
+    }*/
 }

@@ -1,7 +1,8 @@
 package com.example.weather.data.model
 
+import com.google.gson.annotations.SerializedName as SN
+
 data class Forecast(
-    val date: String,
-    val day: Day,
-    val hour: List<Hour>
+    @SN("forecastday")
+    val forecastDays: List<ForecastDay>
 )

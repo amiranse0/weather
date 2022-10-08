@@ -1,6 +1,6 @@
 package com.example.weather.data.remote.api
 
-import com.example.weather.data.model.currentRemote.CurrentRemoteResponse
+import com.example.weather.data.model.Weather
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -12,7 +12,7 @@ interface WeatherService {
     @GET("v1/forecast.json")
     suspend fun getCurrentWeather(
         @QueryMap query: Map<String, String>
-    ): CurrentRemoteResponse
+    ): Weather
 
     companion object{
         fun create(): WeatherService {
