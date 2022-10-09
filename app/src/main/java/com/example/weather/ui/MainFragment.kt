@@ -93,24 +93,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     if (location != null) {
-                        viewModel.latestLocationLiveData.postValue(
-                            Pair(
-                                location.longitude, location.latitude
-                            )
+                        viewModel.getWeather(
+                            latitude = location.latitude,
+                            longitude = location.longitude,
+                            queryByCoordinate = true
                         )
-                        viewModel.latestLocationLiveData.observe(viewLifecycleOwner){
-                            it?.let {
-                                Log.d("Location", it.first.toString())
-                                viewModel.getWeather(
-                                    latitude = it.second,
-                                    longitude = it.first,
-                                    queryByCoordinate = true
-                                )
-                                Log.d("TAG", it.toString())
-                            }
-                        }
+                        Log.d("LOCATION", location.toString())
                     }
-                    Log.d("Location", location.toString())
                 }
         }
     }

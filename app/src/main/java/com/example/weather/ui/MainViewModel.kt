@@ -17,9 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    val latestLocationLiveData: MutableLiveData<Pair<Double, Double>> =
-        MutableLiveData(Pair(181.0, 181.0))
-
     val currentWeatherStateFlow: MutableStateFlow<ResultOf<Weather>> =
         MutableStateFlow(ResultOf.Loading)
 
@@ -49,18 +46,6 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         }
 
         return currentWeatherStateFlow
-    }
-
-    init {
-        latestLocationLiveData.value?.let {
-            Log.d("Location", it.first.toString())
-            this.getWeather(
-                latitude = it.second,
-                longitude = it.first,
-                queryByCoordinate = true
-            )
-            Log.d("TAG", it.toString())
-        }
     }
 
 }
