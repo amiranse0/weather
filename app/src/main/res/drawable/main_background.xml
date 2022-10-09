@@ -5,7 +5,7 @@
     <gradient
         android:startColor = "@color/my_dark_blue"
         android:endColor = "@color/my_red_blue"
-        android:angle = "30"
+        android:angle = "45"
         android:type = "linear"/>
 
 </shape>

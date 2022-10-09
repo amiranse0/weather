@@ -9,6 +9,6 @@ class RemoteDataSource @Inject constructor(
     private val service: WeatherService
 ): IDataSource {
     override suspend fun getCurrentWeather(query: Map<String, String>): Weather {
-        return service.getCurrentWeather(query)
+        return service.getCurrentWeather(query = query)
     }
 }
