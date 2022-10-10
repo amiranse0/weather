@@ -3,10 +3,10 @@ package com.example.weather.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weather.data.Repository
-import com.example.weather.data.ResultOf
+import com.example.weather.data.domain.Repository
+import com.example.weather.data.domain.ResultOf
 import com.example.weather.data.model.remote.RemoteWeather
-import com.example.weather.data.remote.api.ApiConfigurations
+import com.example.weather.data.domain.remote.api.ApiConfigurations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

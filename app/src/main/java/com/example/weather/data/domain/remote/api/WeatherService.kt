@@ -1,4 +1,4 @@
-package com.example.weather.data.remote.api
+package com.example.weather.data.domain.remote.api
 
 import com.example.weather.data.model.remote.RemoteWeather
 import okhttp3.OkHttpClient

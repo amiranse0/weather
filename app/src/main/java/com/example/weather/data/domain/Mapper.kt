@@ -1,4 +1,4 @@
-package com.example.weather.data
+package com.example.weather.data.domain
 
 import com.example.weather.data.model.local.CurrentWeather
 import com.example.weather.data.model.local.Forecast

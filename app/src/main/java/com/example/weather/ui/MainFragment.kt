@@ -18,7 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.weather.R
-import com.example.weather.data.ResultOf
+import com.example.weather.data.domain.ResultOf
 import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.databinding.FragmentMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient

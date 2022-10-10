@@ -1,8 +1,8 @@
 package com.example.weather.di
 
-import com.example.weather.data.IDataSource
-import com.example.weather.data.remote.RemoteDataSource
-import com.example.weather.data.remote.api.WeatherService
+import com.example.weather.data.domain.IDataSource
+import com.example.weather.data.domain.remote.RemoteDataSource
+import com.example.weather.data.domain.remote.api.WeatherService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

@@ -1,4 +1,4 @@
-package com.example.weather.data
+package com.example.weather.data.domain
 
 sealed class ResultOf<out R> {
 
