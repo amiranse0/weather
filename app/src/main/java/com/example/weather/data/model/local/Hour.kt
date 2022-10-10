@@ -2,14 +2,12 @@ package com.example.weather.data.model.local
 
 import androidx.room.ColumnInfo as CI
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.example.weather.data.model.remote.Condition
 
 @Entity(tableName = "hour")
 data class Hour(
-    @PrimaryKey
-    @CI(name = "hour")
-    private val hour: String,
+    @CI(name = "forecast")
+    private val forecast: String, //date + last update
     @CI(name = "chance_of_rain")
     private val chanceOfRain: Int,
     @CI(name = "chance_of_snow")
@@ -17,7 +15,9 @@ data class Hour(
     @CI(name = "cloud")
     private val cloud: Int,
     @CI(name = "condition")
-    private val condition: Condition,
+    private val condition: String,
+    @CI(name = "condition_icon")
+    private val conditionIcon:String,
     @CI(name = "feels_like_temp")
     private val feelsLikeTemperature: Double,
     @CI(name = "humidity")
@@ -41,5 +41,7 @@ data class Hour(
     @CI(name = "wind_dir")
     private val windDirection: String,
     @CI(name = "wind_speed")
-    private val windSpeed: Double
+    private val windSpeed: Double,
+    @CI(name = "number_hour")
+    private val numberHour: Int
 )

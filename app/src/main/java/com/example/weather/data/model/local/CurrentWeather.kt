@@ -2,13 +2,11 @@ package com.example.weather.data.model.local
 
 import androidx.room.ColumnInfo as CI
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
 @Entity(tableName = "current")
 data class CurrentWeather(
-    @PrimaryKey
-    @CI(name = "current_weather")
-    private val currentWeather:String, // local time + last update
+    @CI(name = "weather")
+    private val weather: String, // local time + last update
     @CI(name = "cloud")
     private val cloud: Int,
     @CI(name = "condition_icon")
