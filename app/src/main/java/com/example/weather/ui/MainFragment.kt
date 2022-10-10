@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -20,7 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.weather.R
 import com.example.weather.data.ResultOf
-import com.example.weather.data.model.Weather
+import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.databinding.FragmentMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -113,7 +112,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.currentWeatherStateFlow.collect {
+                viewModel.currentRemoteWeatherStateFlow.collect {
                     when (it) {
                         is ResultOf.Loading -> {
 
@@ -137,7 +136,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
-    private fun putDataOnViews(data: Weather) {
+    private fun putDataOnViews(data: RemoteWeather) {
         binding.nameOfCity.text = data.location.name
     }
 }

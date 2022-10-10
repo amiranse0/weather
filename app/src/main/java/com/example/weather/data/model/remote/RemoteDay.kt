@@ -1,8 +1,8 @@
-package com.example.weather.data.model
+package com.example.weather.data.model.remote
 
 import com.google.gson.annotations.SerializedName as SN
 
-data class Day(
+data class RemoteDay(
     @SN("avghumidity")
     val averageHumidity: Double,
 

@@ -1,4 +1,4 @@
-package com.example.weather.data.model
+package com.example.weather.data.model.remote
 
 data class Condition(
     val code: Int,

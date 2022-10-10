@@ -1,12 +1,11 @@
 package com.example.weather.ui
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather.data.Repository
 import com.example.weather.data.ResultOf
-import com.example.weather.data.model.Weather
+import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.data.remote.api.ApiConfigurations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    val currentWeatherStateFlow: MutableStateFlow<ResultOf<Weather>> =
+    val currentRemoteWeatherStateFlow: MutableStateFlow<ResultOf<RemoteWeather>> =
         MutableStateFlow(ResultOf.Loading)
 
     fun getWeather(
@@ -25,7 +24,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
         latitude: Double = 181.0,
         longitude: Double = 181.0,
         queryByCoordinate: Boolean = false
-    ): Flow<ResultOf<Weather>> {
+    ): Flow<ResultOf<RemoteWeather>> {
         val query: MutableMap<String, String> = mutableMapOf(
             "key" to ApiConfigurations.API_KEY,
             "days" to "7",
@@ -41,11 +40,11 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
                 query["q"] = nameOfCity
             }
             repository.getCurrentWeather(query).collect {
-                currentWeatherStateFlow.emit(it)
+                currentRemoteWeatherStateFlow.emit(it)
             }
         }
 
-        return currentWeatherStateFlow
+        return currentRemoteWeatherStateFlow
     }
 
 }
