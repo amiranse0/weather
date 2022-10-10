@@ -1,15 +1,12 @@
 package com.example.weather.data.domain.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.example.weather.data.model.local.Forecast
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ForecastDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewForecast(forecast: Forecast)
 
     @Query("DELETE FROM forecast")

@@ -12,7 +12,10 @@ import com.example.weather.data.model.local.Weather
 @Database(entities = [Hour::class, Weather::class, CurrentWeather::class, Forecast::class], version = 1)
 abstract class AppDatabase:RoomDatabase() {
 
-    abstract fun weatherDao()
+    abstract fun weatherDao(): WeatherDao
+    abstract fun currentWeatherDao():CurrentWeatherDao
+    abstract fun forecastDao():ForecastDao
+    abstract fun hourDao(): HourDao
 
     companion object{
         @Volatile
