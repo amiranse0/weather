@@ -65,6 +65,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     implementation 'androidx.fragment:fragment-ktx:1.5.3'
 
+    //live data
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+
     //coroutine
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 

@@ -11,19 +11,19 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WeatherDao {
     @Query("SELECT * FROM weather LIMIT 1")
-    suspend fun getWeather(): Flow<Weather>
+    fun getWeather(): Flow<Weather>
 
     @Transaction
     @Query("SELECT * FROM weather LIMIT 1")
-    suspend fun getWeatherAndCurrentWeather():Flow<WeatherAndCurrentWeather>
+    fun getWeatherAndCurrentWeather():Flow<WeatherAndCurrentWeather>
 
     @Transaction
     @Query("SELECT * FROM weather")
-    suspend fun getWeatherWithForecasts():Flow<List<WeatherWithForecasts>>
+    fun getWeatherWithForecasts():Flow<List<WeatherWithForecasts>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewWeather(weather: Weather)
 
     @Query("DELETE FROM weather")
-    suspend fun deleteWeatherTable()
+    fun deleteWeatherTable()
 }

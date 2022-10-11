@@ -13,7 +13,7 @@ object Mapper {
                 countryName = location.country,
                 localTime = location.localTime,
                 region = location.region,
-                weather = location.localTime + remoteCurrent.lastUpdated
+                weather = location.localTime + remoteCurrent.lastUpdatedTime
             )
         }
     }
@@ -21,14 +21,14 @@ object Mapper {
     fun currentWeatherRemoteToLocal(remoteWeather: RemoteWeather):CurrentWeather{
         remoteWeather.apply {
             return CurrentWeather(
-                weather = location.localTime + remoteCurrent.lastUpdated,
+                weather = location.localTime + remoteCurrent.lastUpdatedTime,
                 cloud = remoteCurrent.cloud,
                 conditionIcon = remoteCurrent.condition.icon,
                 condition = remoteCurrent.condition.text,
                 feelsLikeTemperature = remoteCurrent.feelsLikeTemperature,
                 gust = remoteCurrent.gustInKph,
                 humidity = remoteCurrent.humidity,
-                lastUpdated = remoteCurrent.lastUpdated,
+                lastUpdated = remoteCurrent.lastUpdatedTime,
                 precipitation = remoteCurrent.precipitation,
                 temperature = remoteCurrent.temperature,
                 visibility = remoteCurrent.visibility,
@@ -43,7 +43,7 @@ object Mapper {
         remoteWeather.apply {
             val day = remoteForecast.remoteForecastDays[numberDay].remoteDay
             return Forecast(
-                weather = location.localTime + remoteCurrent.lastUpdated,
+                weather = location.localTime + remoteCurrent.lastUpdatedTime,
                 date = remoteForecast.remoteForecastDays[numberDay].date,
                 averageHumidity = day.averageHumidity,
                 averageTemperature = day.averageTemperature,
@@ -58,7 +58,7 @@ object Mapper {
                 totalPrecipitation = day.totalPrecipitation,
                 uv = day.uv,
                 numberDay = numberDay,
-                forecast = remoteForecast.remoteForecastDays[numberDay].date + remoteCurrent.lastUpdated
+                forecast = remoteForecast.remoteForecastDays[numberDay].date + remoteCurrent.lastUpdatedTime
             )
         }
     }
@@ -67,7 +67,7 @@ object Mapper {
         remoteWeather.apply {
             val hour = remoteForecast.remoteForecastDays[numberDay].remoteHour[numberHour]
             return Hour(
-                forecast = remoteForecast.remoteForecastDays[numberDay].date + remoteCurrent.lastUpdated,
+                forecast = remoteForecast.remoteForecastDays[numberDay].date + remoteCurrent.lastUpdatedTime,
                 chanceOfRain = hour.chanceOfRain,
                 chanceOfSnow = hour.chanceOfSnow,
                 cloud = hour.cloud,

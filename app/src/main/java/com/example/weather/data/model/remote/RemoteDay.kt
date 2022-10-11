@@ -12,6 +12,7 @@ data class RemoteDay(
     @SN("avgvis_km")
     val averageVisibility: Double,
 
+    @SN("condition")
     val condition: Condition,
 
     @SN("daily_chance_of_rain")
@@ -32,5 +33,6 @@ data class RemoteDay(
     @SN("totalprecip_mm")
     val totalPrecipitation: Double,
 
+    @SN("uv")
     val uv: Double
 )

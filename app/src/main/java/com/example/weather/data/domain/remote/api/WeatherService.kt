@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 interface WeatherService {
     @GET("v1/forecast.json")
-    suspend fun getCurrentWeather(
+    suspend fun getWeather(
         @QueryMap query: Map<String, String>
     ): RemoteWeather
 

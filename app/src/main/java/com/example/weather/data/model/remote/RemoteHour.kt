@@ -9,17 +9,22 @@ data class RemoteHour(
     @SN("chance_of_snow")
     val chanceOfSnow: Int,
 
+    @SN("cloud")
     val cloud: Int,
 
+    @SN("condition")
     val condition: Condition,
 
     @SN("feelslike_c")
     val feelsLikeTemperature: Double,
 
+    @SN("humidity")
     val humidity: Int,
 
+    @SN("time")
     val time: String,
 
+    @SN("uv")
     val uv: Double,
 
     @SN("will_it_rain")

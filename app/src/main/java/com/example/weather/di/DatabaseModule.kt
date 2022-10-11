@@ -20,16 +20,4 @@ class DatabaseModule {
         return AppDatabase.getDatabase(context)
     }
 
-    @Provides
-    fun provideWeatherDao(appDatabase: AppDatabase) = appDatabase.weatherDao()
-
-    @Provides
-    fun provideCurrentWeatherDao(appDatabase: AppDatabase) = appDatabase.currentWeatherDao()
-
-    @Provides
-    fun provideForecastDao(appDatabase: AppDatabase) = appDatabase.forecastDao()
-
-    @Provides
-    fun provideHourDao(appDatabase: AppDatabase) = appDatabase.hourDao()
-
 }

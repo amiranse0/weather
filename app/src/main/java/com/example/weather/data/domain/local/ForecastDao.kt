@@ -14,5 +14,5 @@ interface ForecastDao {
 
     @Transaction
     @Query("SELECT * FROM forecast")
-    suspend fun getForecastWithHours(): Flow<List<ForecastWithHours>>
+    fun getForecastWithHours(): Flow<List<ForecastWithHours>>
 }

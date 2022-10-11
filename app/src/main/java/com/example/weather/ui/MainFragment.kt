@@ -18,7 +18,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.weather.R
-import com.example.weather.data.domain.ResultOf
+import com.example.weather.data.domain.local.WeatherAndCurrentWeather
+import com.example.weather.data.model.local.Weather
+import com.example.weather.data.model.remote.RemoteCurrent
+import com.example.weather.util.ResultOf
 import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.databinding.FragmentMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -41,9 +44,32 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         initializingVariables(view)
 
-        getWeatherForLatestLocation()
+        //getWeatherForLatestLocation()
 
-        getLatestLocation()
+        //getLatestLocation()
+
+
+        viewModel.weatherLiveData.observe(viewLifecycleOwner){
+            when(it){
+                is ResultOf.Error -> {
+                    activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+                        View.GONE
+                    activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
+                        View.VISIBLE
+
+                    Log.d("TAG", it.exception.message.toString())
+                }
+                is ResultOf.Success -> {
+                    activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+                        View.GONE
+                    activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
+                        View.VISIBLE
+                    putDataOnViews(it.data)
+                }
+                is ResultOf.Loading -> {}
+
+            }
+        }
 
     }
 
@@ -92,11 +118,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     if (location != null) {
-                        viewModel.getWeather(
-                            latitude = location.latitude,
-                            longitude = location.longitude,
-                            queryByCoordinate = true
-                        )
+//                        viewModel.getWeather(
+//                            latitude = location.latitude,
+//                            longitude = location.longitude,
+//                            queryByCoordinate = true
+//                        )
                         Log.d("LOCATION", location.toString())
                     }
                 }
@@ -108,35 +134,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
-    private fun getWeatherForLatestLocation() {
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.currentRemoteWeatherStateFlow.collect {
-                    when (it) {
-                        is ResultOf.Loading -> {
-
-                        }
-                        is ResultOf.Error -> {
-                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                                View.GONE
-                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
-                                View.VISIBLE
-                        }
-                        is ResultOf.Success -> {
-                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                                View.GONE
-                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
-                                View.VISIBLE
-                            putDataOnViews(it.data)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun putDataOnViews(data: RemoteWeather) {
-        binding.nameOfCity.text = data.location.name
+    private fun putDataOnViews(data: WeatherAndCurrentWeather) {
+        binding.nameOfCity.text = data.weather.countryName
     }
 }
