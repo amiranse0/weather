@@ -21,12 +21,15 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val weatherRepository: WeatherRepository) :
     ViewModel() {
 
-    val weatherLiveData = weatherRepository.getWeatherAndCurrentWeather(
-        query = mapOf(
-            "key" to ApiConfigurations.API_KEY,
-            "days" to "7",
-            "aqi" to "no",
-            "alerts" to "no",
-            "q" to "Tehran"
-        )).asLiveData()
+    private val weathers = weatherRepository.getWeathers(query = mapOf(
+        "key" to ApiConfigurations.API_KEY,
+        "days" to "7",
+        "aqi" to "no",
+        "alerts" to "no",
+        "q" to "Tehran"
+    ))
+
+    val weatherAndCurrentWeatherStateFlow = weathers.first
+    val weatherWithForecastsStateFlow = weathers.second
+    val forecastWithHoursStateFlow = weathers.third
 }

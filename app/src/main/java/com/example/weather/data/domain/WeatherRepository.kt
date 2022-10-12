@@ -1,42 +1,38 @@
 package com.example.weather.data.domain
 
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.room.withTransaction
 import com.example.weather.data.domain.local.*
 import com.example.weather.data.domain.remote.api.WeatherService
-import com.example.weather.data.model.local.Weather
 import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.util.ResultOf
 import com.example.weather.util.boundResource
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(
     private val weatherService: WeatherService,
     private val database: AppDatabase
 ) {
-    companion object {
-        const val DELAY_TIME_UPDATE_LOCAL = 5000L//TimeUnit.MINUTES.toMillis(3)
-    }
-
     private val weatherDao = database.weatherDao()
     private val currentWeatherDao = database.currentWeatherDao()
     private val forecastDao = database.forecastDao()
     private val hourDao = database.hourDao()
 
-    fun getWeatherAndCurrentWeather(query: Map<String, String>): Flow<ResultOf<WeatherAndCurrentWeather>> =
+    fun getWeathers(query: Map<String, String>) =
         boundResource(
-            query = {
+            query1 = {
                 weatherDao.getWeatherAndCurrentWeather()
             },
+            query2 = {
+                weatherDao.getWeatherWithForecasts()
+            },
+            query3 = {
+                forecastDao.getForecastWithHours()
+            },
             fetch = {
-                delay(DELAY_TIME_UPDATE_LOCAL)
-                Log.d("TAG", "request")
                 weatherService.getWeather(query)
             },
             saveFetchResult = {
@@ -72,5 +68,4 @@ class WeatherRepository @Inject constructor(
                 }
             }
         )
-
 }

@@ -27,6 +27,7 @@ import com.example.weather.databinding.FragmentMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -44,33 +45,37 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         initializingVariables(view)
 
-        //getWeatherForLatestLocation()
-
         //getLatestLocation()
 
+        weatherAndCurrentWeather()
 
-        viewModel.weatherLiveData.observe(viewLifecycleOwner){
-            when(it){
-                is ResultOf.Error -> {
-                    activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                        View.GONE
-                    activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
-                        View.VISIBLE
+    }
 
-                    Log.d("TAG", it.exception.message.toString())
+    private fun weatherAndCurrentWeather() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.weatherAndCurrentWeatherStateFlow.collect{
+                    when(it){
+                        is ResultOf.Loading -> {
+
+                        }
+                        is ResultOf.Error -> {
+                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+                                View.GONE
+                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
+                                View.VISIBLE
+                        }
+                        is ResultOf.Success -> {
+                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+                                View.GONE
+                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
+                                View.VISIBLE
+                            putDataOnViews(it.data)
+                        }
+                    }
                 }
-                is ResultOf.Success -> {
-                    activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                        View.GONE
-                    activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
-                        View.VISIBLE
-                    putDataOnViews(it.data)
-                }
-                is ResultOf.Loading -> {}
-
             }
         }
-
     }
 
     private fun getLatestLocation() {
