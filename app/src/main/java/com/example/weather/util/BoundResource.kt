@@ -6,6 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
+
+val TIME_STEP_REQUEST = TimeUnit.MINUTES.toMillis(5)
 
 fun <I, O1,O2,O3> boundResource(
     query1: () -> Flow<O1>,
@@ -24,7 +27,7 @@ fun <I, O1,O2,O3> boundResource(
     val stateFlow3: MutableStateFlow<ResultOf<O3>> =
         MutableStateFlow(ResultOf.Loading)
 
-    object : CountDownTimer(5000, 1000){
+    object : CountDownTimer(TIME_STEP_REQUEST, 1000){
         val countDownTimer = this
 
         override fun onTick(millisUntilFinished: Long) {

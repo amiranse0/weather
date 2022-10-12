@@ -1,32 +1,37 @@
 package com.example.weather.ui
 
-import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.weather.data.domain.WeatherRepository
-import com.example.weather.data.domain.local.WeatherAndCurrentWeather
-import com.example.weather.util.ResultOf
-import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.data.domain.remote.api.ApiConfigurations
-import com.example.weather.data.model.local.Weather
-import com.example.weather.data.model.remote.RemoteCurrent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val weatherRepository: WeatherRepository) :
     ViewModel() {
 
+    private val queryMap = mutableMapOf(
+        "ket" to ApiConfigurations.API_KEY,
+        "days" to "7",
+        "aqi" to "no",
+        "alerts" to "no"
+    )
+
+    fun autoCurrentWeather(){
+        val _queryMap = queryMap
+        _queryMap["q"] = "${locationLiveData.value?.first},${locationLiveData.value?.second}"
+    }
+
+    var locationLiveData: MutableLiveData<Pair<Double, Double>> = MutableLiveData()
+
+
     private val weathers = weatherRepository.getWeathers(query = mapOf(
         "key" to ApiConfigurations.API_KEY,
         "days" to "7",
         "aqi" to "no",
         "alerts" to "no",
-        "q" to "Tehran"
+        "q" to "${locationLiveData.value?.first},${locationLiveData.value?.second}"
     ))
 
     val weatherAndCurrentWeatherStateFlow = weathers.first

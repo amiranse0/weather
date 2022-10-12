@@ -45,7 +45,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         initializingVariables(view)
 
-        //getLatestLocation()
+        getLatestLocation()
 
         weatherAndCurrentWeather()
 
@@ -60,16 +60,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
                         }
                         is ResultOf.Error -> {
-                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                                View.GONE
-                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
-                                View.VISIBLE
+//                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+//                                View.GONE
+//                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
+//                                View.VISIBLE
                         }
                         is ResultOf.Success -> {
-                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                                View.GONE
-                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
-                                View.VISIBLE
+//                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+//                                View.GONE
+//                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
+//                                View.VISIBLE
                             putDataOnViews(it.data)
                         }
                     }
@@ -123,13 +123,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     if (location != null) {
-//                        viewModel.getWeather(
-//                            latitude = location.latitude,
-//                            longitude = location.longitude,
-//                            queryByCoordinate = true
-//                        )
-                        Log.d("LOCATION", location.toString())
+                        viewModel.locationLiveData.postValue(Pair(location.latitude, location.latitude))
                     }
+                    Log.d("LOCATION", location.toString())
                 }
         }
     }
@@ -140,6 +136,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun putDataOnViews(data: WeatherAndCurrentWeather) {
-        binding.nameOfCity.text = data.weather.countryName
+        binding.locationView.locationTv.text = data.weather.countryName
     }
 }
