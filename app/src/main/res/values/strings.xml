@@ -4,4 +4,6 @@
     <string name="show_more">show more…</string>
     <string name="temperature_template">%1.1f°c</string>
     <string name="chance_probability_template">%d%%</string>
+    <string name="notification">notification</string>
+    <string name="map">map</string>
 </resources>
