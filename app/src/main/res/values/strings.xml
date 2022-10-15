@@ -2,4 +2,6 @@
     <string name="app_name">Weather</string>
     <string name="city_name">city name</string>
     <string name="show_more">show more…</string>
+    <string name="temperature_template">%1.1f°c</string>
+    <string name="chance_probability_template">%d%%</string>
 </resources>

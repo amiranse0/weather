@@ -1,4 +1,4 @@
-package com.example.weather.data.domain.local
+package com.example.weather.data.model.local
 
 import androidx.room.Embedded
 import androidx.room.Relation

@@ -6,6 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.weather.data.model.local.Weather
+import com.example.weather.data.model.local.WeatherAndCurrentWeather
+import com.example.weather.data.model.local.WeatherWithForecasts
 import kotlinx.coroutines.flow.Flow
 
 @Dao

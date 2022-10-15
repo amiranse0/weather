@@ -2,6 +2,7 @@ package com.example.weather.data.domain.local
 
 import androidx.room.*
 import com.example.weather.data.model.local.Forecast
+import com.example.weather.data.model.local.ForecastWithHours
 import kotlinx.coroutines.flow.Flow
 
 @Dao
