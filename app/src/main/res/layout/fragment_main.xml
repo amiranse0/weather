@@ -7,7 +7,6 @@
     android:layout_margin="@dimen/margin_size"
     android:padding="@dimen/padding_size">
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/name_query_il"
         android:layout_width="match_parent"

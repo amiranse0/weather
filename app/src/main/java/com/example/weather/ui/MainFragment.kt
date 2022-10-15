@@ -7,20 +7,23 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.weather.R
 import com.example.weather.adapters.MainDaysAdapter
 import com.example.weather.adapters.MainHoursAdapter
 import com.example.weather.data.model.local.Forecast
 import com.example.weather.data.model.local.WeatherAndCurrentWeather
-import com.example.weather.util.ResultOf
 import com.example.weather.databinding.FragmentMainBinding
+import com.example.weather.util.ResultOf
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +77,27 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         weatherAndCurrentWeather()
 
+        appBarOptionsSelection()
+
+    }
+
+    private fun appBarOptionsSelection() {
+        val mainActivity = activity as AppCompatActivity?
+
+        val toolbar: Toolbar? = mainActivity?.supportActionBar?.customView as Toolbar?
+
+        Log.d("TAG", "$toolbar")
+        toolbar?.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.action_notification -> {true}
+                R.id.action_go_to_map -> {
+                    findNavController().navigate(R.id.action_mainFragment_to_mapFragment)
+                    Toast.makeText(requireContext(), "TEST", Toast.LENGTH_LONG).show()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun weatherAndCurrentWeather() {
