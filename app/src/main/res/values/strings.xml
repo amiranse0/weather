@@ -6,4 +6,9 @@
     <string name="chance_probability_template">%d%%</string>
     <string name="notification">notification</string>
     <string name="map">map</string>
+    <string name="notification_title">Notification</string>
+    <string name="multiplication_sign">×</string>
+    <string name="submit">submit</string>
+    <string name="time_notification_has_be_come">TIME_NOTIFICATION_HAS_BE_COME</string>
+    <string name="weather">Weather</string>
 </resources>
