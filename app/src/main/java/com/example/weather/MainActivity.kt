@@ -17,6 +17,16 @@ import java.util.Calendar
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    override fun onPause() {
+        super.onPause()
+        MainApp.activityPaused()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MainApp.activityResumed()
+    }
+
     companion object {
         const val NOTIFICATION_WORKER_ID = "ID"
     }

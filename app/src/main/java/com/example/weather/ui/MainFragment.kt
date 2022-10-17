@@ -1,15 +1,20 @@
 package com.example.weather.ui
 
 import android.Manifest
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -32,6 +37,33 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main) {
+
+    private val sharedPref: SharedPreferences? =
+        activity?.getPreferences(Context.MODE_PRIVATE)
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                    Toast.makeText(context, "precise permission granted", Toast.LENGTH_LONG)
+                        .show()
+                }
+                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    Toast.makeText(context, "approximate permission granted", Toast.LENGTH_LONG)
+                        .show()
+                }
+                else -> {
+                    Toast.makeText(
+                        context,
+                        "please get permission to this app",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+        }
 
     private lateinit var binding: FragmentMainBinding
 
@@ -70,7 +102,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             1
         )
 
-        val list = listOf(test,test,test,test,test,test,test,test)
+        val list = listOf(test, test, test, test, test, test, test, test)
         daysAdapter.submitList(list)
 
         getLatestLocation()
@@ -88,8 +120,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         Log.d("TAG", "$toolbar")
         toolbar?.setOnMenuItemClickListener {
-            when(it.itemId){
-                R.id.action_notification -> {true}
+            when (it.itemId) {
+                R.id.action_notification -> {
+                    true
+                }
                 R.id.action_go_to_map -> {
                     findNavController().navigate(R.id.action_mainFragment_to_mapFragment)
                     Toast.makeText(requireContext(), "TEST", Toast.LENGTH_LONG).show()
@@ -106,19 +140,24 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 viewModel.weatherAndCurrentWeatherStateFlow.collect {
                     when (it) {
                         is ResultOf.Loading -> {
-
+                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+                                View.VISIBLE
+                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
+                                View.GONE
+                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
+                                View.INVISIBLE
                         }
                         is ResultOf.Error -> {
-//                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-//                                View.GONE
-//                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
-//                                View.VISIBLE
+                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+                                View.GONE
+                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
+                                View.VISIBLE
                         }
                         is ResultOf.Success -> {
-//                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-//                                View.GONE
-//                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
-//                                View.VISIBLE
+                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
+                                View.GONE
+                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
+                                View.VISIBLE
                             putDataOnViews(it.data)
                         }
                     }
@@ -128,30 +167,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun getLatestLocation() {
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
-            ) { permissions ->
-                when {
-                    permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                        Toast.makeText(context, "precise permission granted", Toast.LENGTH_LONG)
-                            .show()
-                    }
-                    permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                        Toast.makeText(context, "approximate permission granted", Toast.LENGTH_LONG)
-                            .show()
-                    }
-                    else -> {
-                        Toast.makeText(
-                            context,
-                            "please get permission to this app",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-            }
-
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -171,15 +186,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         } else {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
+                    val coordinates: String
                     if (location != null) {
-                        viewModel.locationLiveData.postValue(
-                            Pair(
-                                location.latitude,
-                                location.latitude
-                            )
-                        )
+                        coordinates = "${location.latitude}, ${location.longitude}"
+                        with(sharedPref?.edit()) {
+                            this?.putString(getString(R.string.coordinates), coordinates)
+                            this?.apply()
+                        }
+                    } else {
+                        coordinates =
+                            sharedPref?.getString(getString(R.string.coordinates), "Tehran")
+                                ?: "Tehran"
                     }
-                    Log.d("LOCATION", location.toString())
+                    viewModel.getWeathers(coordinates)
                 }
         }
     }

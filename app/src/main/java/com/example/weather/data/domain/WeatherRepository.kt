@@ -21,7 +21,7 @@ class WeatherRepository @Inject constructor(
     private val forecastDao = database.forecastDao()
     private val hourDao = database.hourDao()
 
-    fun getWeathers(query: Map<String, String>) =
+    suspend fun getWeathers(query: Map<String, String>) =
         boundResource(
             query1 = {
                 weatherDao.getWeatherAndCurrentWeather()
