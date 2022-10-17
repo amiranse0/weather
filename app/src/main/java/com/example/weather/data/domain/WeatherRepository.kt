@@ -32,6 +32,9 @@ class WeatherRepository @Inject constructor(
             query3 = {
                 forecastDao.getForecastWithHours()
             },
+            query4 = {
+                     weatherDao.getNumberOfRecordsOfWeather()
+            },
             fetch = {
                 weatherService.getWeather(query)
             },

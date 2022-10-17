@@ -28,4 +28,7 @@ interface WeatherDao {
 
     @Query("DELETE FROM weather")
     fun deleteWeatherTable()
+
+    @Query("SELECT COUNT(*) FROM weather")
+    fun getNumberOfRecordsOfWeather():Flow<Int>
 }

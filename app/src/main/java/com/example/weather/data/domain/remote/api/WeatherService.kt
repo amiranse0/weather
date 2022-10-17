@@ -22,8 +22,6 @@ interface WeatherService {
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(logger)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .callTimeout(30, TimeUnit.SECONDS)
                 .build()
 
             return Retrofit.Builder()

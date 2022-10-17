@@ -28,10 +28,10 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
     private val _weatherAndCurrentWeatherStateFlow: MutableStateFlow<ResultOf<WeatherAndCurrentWeather>> =
         MutableStateFlow(ResultOf.Loading)
     val weatherAndCurrentWeatherStateFlow = _weatherAndCurrentWeatherStateFlow
-    private val _weatherWithForecastsStateFlow: MutableStateFlow<ResultOf<WeatherWithForecasts>> =
+    private val _weatherWithForecastsStateFlow: MutableStateFlow<ResultOf<List<WeatherWithForecasts>>> =
         MutableStateFlow(ResultOf.Loading)
     val weatherWithForecastsStateFlow = _weatherWithForecastsStateFlow
-    private val _forecastWithHoursStateFlow: MutableStateFlow<ResultOf<ForecastWithHours>> =
+    private val _forecastWithHoursStateFlow: MutableStateFlow<ResultOf<List<ForecastWithHours>>> =
         MutableStateFlow(ResultOf.Loading)
     val forecastWithHoursStateFlow = _forecastWithHoursStateFlow
 
@@ -43,6 +43,12 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
 
             _weatherAndCurrentWeatherStateFlow.update {
                 weathers.first.value
+            }
+            _weatherWithForecastsStateFlow.update {
+                weathers.second.value
+            }
+            _forecastWithHoursStateFlow.update {
+                weathers.third.value
             }
         }
     }

@@ -41,30 +41,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val sharedPref: SharedPreferences? =
         activity?.getPreferences(Context.MODE_PRIVATE)
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            when {
-                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    Toast.makeText(context, "precise permission granted", Toast.LENGTH_LONG)
-                        .show()
-                }
-                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    Toast.makeText(context, "approximate permission granted", Toast.LENGTH_LONG)
-                        .show()
-                }
-                else -> {
-                    Toast.makeText(
-                        context,
-                        "please get permission to this app",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-
-        }
-
     private lateinit var binding: FragmentMainBinding
 
     private val viewModel: MainViewModel by viewModels()
@@ -168,6 +144,30 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun getLatestLocation() {
 
+        val requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { permissions ->
+                when {
+                    permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                        Toast.makeText(context, "precise permission granted", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                        Toast.makeText(context, "approximate permission granted", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    else -> {
+                        Toast.makeText(
+                            context,
+                            "please get permission to this app",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+            }
+
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -187,6 +187,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     val coordinates: String
+                    Log.d("LOCATION", location.toString())
                     if (location != null) {
                         coordinates = "${location.latitude}, ${location.longitude}"
                         with(sharedPref?.edit()) {
@@ -196,7 +197,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     } else {
                         coordinates =
                             sharedPref?.getString(getString(R.string.coordinates), "Tehran")
-                                ?: "Tehran"
+                                ?: "Toronto"
                     }
                     viewModel.getWeathers(coordinates)
                 }
