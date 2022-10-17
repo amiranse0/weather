@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -28,6 +29,8 @@ class NotificationWorker @Inject constructor(
     override suspend fun doWork(): Result {
         notification()
         channelNotification()
+
+        Log.d("ALARM", "Worker")
 
         return Result.retry()
     }

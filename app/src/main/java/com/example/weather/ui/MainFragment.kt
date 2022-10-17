@@ -122,12 +122,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                 View.GONE
                             activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
                                 View.INVISIBLE
+                            Log.d("TAG", "Loading")
                         }
                         is ResultOf.Error -> {
                             activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
                                 View.GONE
                             activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
                                 View.VISIBLE
+                            Log.d("TAG", "Error")
                         }
                         is ResultOf.Success -> {
                             activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
@@ -135,6 +137,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                             activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
                                 View.VISIBLE
                             putDataOnViews(it.data)
+                            Log.d("TAG", "Success")
                         }
                     }
                 }

@@ -6,11 +6,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.work.*
 import com.example.weather.MainActivity
 import com.example.weather.workers.NotificationWorker
@@ -22,17 +19,15 @@ class AlarmNotificationReceiver : BroadcastReceiver() {
         const val REQUEST_CODE = 1
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context?, intent: Intent?) {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(false)
             .build()
 
         val notificationRequest = PeriodicWorkRequest.Builder(
             NotificationWorker::class.java,
-            1,
-            TimeUnit.DAYS
+            15,
+            TimeUnit.MINUTES
         ).setConstraints(constraints)
             .build()
 
@@ -55,10 +50,19 @@ class AlarmNotificationReceiver : BroadcastReceiver() {
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
-        alarmManager.set(
+        alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             time,
             pendingIntent
         )
+        Log.d("ALARM", "SET")
+    }
+
+
+    fun cancelAlarm(context: Context) {
+        val intent = Intent(context, AlarmNotificationReceiver::class.java)
+        val sender = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, 0)
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(sender)
     }
 }

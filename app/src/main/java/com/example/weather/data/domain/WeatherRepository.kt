@@ -1,15 +1,9 @@
 package com.example.weather.data.domain
 
-import android.os.CountDownTimer
-import android.util.Log
 import androidx.room.withTransaction
 import com.example.weather.data.domain.local.*
 import com.example.weather.data.domain.remote.api.WeatherService
-import com.example.weather.data.model.remote.RemoteWeather
-import com.example.weather.util.ResultOf
 import com.example.weather.util.boundResource
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(

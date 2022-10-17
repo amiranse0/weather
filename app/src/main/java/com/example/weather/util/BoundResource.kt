@@ -27,9 +27,6 @@ suspend fun <I, O1, O2, O3> boundResource(
     val stateFlow3: MutableStateFlow<ResultOf<O3>> =
         MutableStateFlow(ResultOf.Loading)
 
-    var isLocalDataBaseEmpty = true
-
-
     if (MainApp.isConnected()) {
         try {
             val data = fetch()

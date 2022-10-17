@@ -1,12 +1,23 @@
 package com.example.weather
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.Dialog
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.view.children
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.navigation.createGraph
 import androidx.navigation.findNavController
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.databinding.DialogNotificationCustomizationBinding
@@ -66,16 +77,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setNotifications() {
+        val notificationCustomizationDialog =
+            Dialog(this, androidx.transition.R.style.Base_ThemeOverlay_AppCompat)
         dialogBinding = DialogNotificationCustomizationBinding.inflate(layoutInflater)
-        val notificationCustomizationDialog = Dialog(this, androidx.transition.R.style.Base_ThemeOverlay_AppCompat)
-        notificationCustomizationDialog.also {
-            setContentView(dialogBinding.root)
-        }
+        notificationCustomizationDialog.setContentView(dialogBinding.root)
 
         dialogBinding.submitButton.setOnClickListener {
             val time = getTime()
             val alarmNotificationReceiver = AlarmNotificationReceiver()
             alarmNotificationReceiver.setAlarm(time, this)
+
             notificationCustomizationDialog.dismiss()
         }
 
@@ -88,21 +99,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getTime(): Long {
-        val hour = dialogBinding.notificationTimePicker.hour
-        val minute = dialogBinding.notificationTimePicker.minute
+        val hour:Int = dialogBinding.notificationTimePicker.hour
+        val minute:Int = dialogBinding.notificationTimePicker.minute
         val calendar = Calendar.getInstance()
-        val currentYear = calendar.get(Calendar.YEAR)
-        val currentMonth = calendar.get(Calendar.MONTH)
-        val currentDay = calendar.get(Calendar.DATE)
+        val currentYear:Int = calendar.get(Calendar.YEAR)
+        val currentMonth:Int = calendar.get(Calendar.MONTH)
+        val currentDay:Int = calendar.get(Calendar.DATE)
         calendar.set(
             currentYear,
-            currentMonth + 1,
+            currentMonth ,
             currentDay,
             hour,
             minute,
-            0
+            1
         )
-        Log.d("TAG", "$currentDay, $currentYear, $currentMonth")
+        Log.d("ALARM", "${calendar.time}")
+
         return calendar.timeInMillis
     }
 
