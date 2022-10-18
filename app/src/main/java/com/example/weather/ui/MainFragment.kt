@@ -56,10 +56,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModel.mock()
-        }
-
         initializingVariables(view)
 
         binding.hoursList.adapter = hoursAdapter
@@ -208,7 +204,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                             sharedPref?.getString(getString(R.string.coordinates), "Tehran")
                                 ?: "Toronto"
                     }
-                    viewModel.getWeathers(coordinates)
+                    TODO("send request for current location")
                 }
         }
     }

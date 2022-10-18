@@ -13,6 +13,14 @@ class LocalDataSource @Inject constructor(
     private val forecastDao = database.forecastDao()
     private val hourDao = database.hourDao()
 
+    fun getWeatherAndCurrentWeather() = weatherDao.getWeatherAndCurrentWeather()
+
+    fun getWeatherWithForecasts() = weatherDao.getWeatherWithForecasts()
+
+    fun getForecastWithHours() = forecastDao.getForecastWithHours()
+
+    suspend fun isDataExistInLocal() = weatherDao.getNumberOfRecordsOfWeather() != 0
+
     suspend fun updateLocal(remoteWeather: RemoteWeather){
         database.withTransaction {
             weatherDao.deleteWeatherTable()

@@ -17,11 +17,11 @@ interface WeatherDao {
 
     @Transaction
     @Query("SELECT * FROM weather LIMIT 1")
-    fun getWeatherAndCurrentWeather():Flow<WeatherAndCurrentWeather>
+    fun getWeatherAndCurrentWeather(): Flow<WeatherAndCurrentWeather>
 
     @Transaction
     @Query("SELECT * FROM weather")
-    fun getWeatherWithForecasts():Flow<List<WeatherWithForecasts>>
+    fun getWeatherWithForecasts(): Flow<List<WeatherWithForecasts>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewWeather(weather: Weather)
@@ -30,5 +30,5 @@ interface WeatherDao {
     fun deleteWeatherTable()
 
     @Query("SELECT COUNT(*) FROM weather")
-    fun getNumberOfRecordsOfWeather():Flow<Int>
+    suspend fun getNumberOfRecordsOfWeather(): Int
 }

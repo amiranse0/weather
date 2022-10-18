@@ -1,14 +1,11 @@
 package com.example.weather.data.domain
 
-import com.example.weather.data.model.local.CurrentWeather
-import com.example.weather.data.model.local.Forecast
-import com.example.weather.data.model.local.Hour
-import com.example.weather.data.model.local.Weather
+import com.example.weather.data.model.local.*
 import com.example.weather.data.model.remote.RemoteWeather
 
 object Mapper {
-    fun weatherRemoteToLocal(remoteWeather: RemoteWeather): Weather{
-         remoteWeather.apply {
+    fun weatherRemoteToLocal(remoteWeather: RemoteWeather): Weather {
+        remoteWeather.apply {
             return Weather(
                 countryName = location.country,
                 localTime = location.localTime,
@@ -18,7 +15,7 @@ object Mapper {
         }
     }
 
-    fun currentWeatherRemoteToLocal(remoteWeather: RemoteWeather):CurrentWeather{
+    fun currentWeatherRemoteToLocal(remoteWeather: RemoteWeather): CurrentWeather {
         remoteWeather.apply {
             return CurrentWeather(
                 weather = location.localTime + remoteCurrent.lastUpdatedTime,
@@ -39,7 +36,7 @@ object Mapper {
         }
     }
 
-    fun forecastRemoteToLocal(remoteWeather: RemoteWeather, numberDay:Int):Forecast{
+    fun forecastRemoteToLocal(remoteWeather: RemoteWeather, numberDay: Int): Forecast {
         remoteWeather.apply {
             val day = remoteForecast.remoteForecastDays[numberDay].remoteDay
             return Forecast(
@@ -63,7 +60,7 @@ object Mapper {
         }
     }
 
-    fun hourRemoteToLocal(remoteWeather: RemoteWeather, numberHour:Int, numberDay: Int): Hour{
+    fun hourRemoteToLocal(remoteWeather: RemoteWeather, numberHour: Int, numberDay: Int): Hour {
         remoteWeather.apply {
             val hour = remoteForecast.remoteForecastDays[numberDay].remoteHour[numberHour]
             return Hour(
@@ -89,5 +86,7 @@ object Mapper {
             )
         }
     }
+
+
 
 }

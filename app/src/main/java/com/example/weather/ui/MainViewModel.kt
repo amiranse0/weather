@@ -1,6 +1,5 @@
 package com.example.weather.ui
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,11 +10,9 @@ import com.example.weather.data.model.local.ForecastWithHours
 import com.example.weather.data.model.local.WeatherAndCurrentWeather
 import com.example.weather.data.model.local.WeatherWithForecasts
 import com.example.weather.util.ResultOf
-import com.example.weather.util.haveNetwork
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.update
+
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,20 +27,30 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
         "alerts" to "no"
     )
 
-    suspend fun mainFunction(){
+    private suspend fun oldDataAndError(isDataExistInLocal: Boolean, errorMessage: String){
+        if (isDataExistInLocal){
+            TODO("toast that something is wrong and show old data")
+        }else{
+            TODO("Show the error")
+        }
+    }
+
+    suspend fun mainFunction(query: Map<String, String>) {
         viewModelScope.launch {
-            MainApp.isConnected().collect{
-                if (it){
-                    TODO("fetch date from remote")
-                    TODO("if fetch successful save the data in local")
-                    TODO("if fetch failed check data is exist on local")
-                    TODO("if exist show it and make a toast that something is wrong.")
-                    TODO("if not show error.")
-                }else{
+            val isDataExistInLocal = weatherRepository.isDataExistInLocal()
+            MainApp.isConnected().collect {
+                if (it) {
+                    try {
+                        val data = weatherRepository.fetch(query)
+                        weatherRepository.saveDataToLocal(data)
+
+
+                    } catch (e:Exception){
+                        oldDataAndError(isDataExistInLocal, e.message.toString())
+                    }
+                } else {
+                    oldDataAndError(isDataExistInLocal, "")
                     TODO("Toast that no internet connection")
-                    TODO("check exist data in local")
-                    TODO("if data exist show it")
-                    TODO("if data not exist show error message only")
                 }
             }
         }
@@ -58,23 +65,5 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
     private val _forecastWithHoursStateFlow: MutableStateFlow<ResultOf<List<ForecastWithHours>>> =
         MutableStateFlow(ResultOf.Loading)
     val forecastWithHoursStateFlow = _forecastWithHoursStateFlow
-
-    fun getWeathers(query:String){
-        viewModelScope.launch {
-            val tempQuery = queryMap
-            tempQuery["q"] = query
-            val weathers = weatherRepository.getWeathers(tempQuery)
-
-            _weatherAndCurrentWeatherStateFlow.update {
-                weathers.first.value
-            }
-            _weatherWithForecastsStateFlow.update {
-                weathers.second.value
-            }
-            _forecastWithHoursStateFlow.update {
-                weathers.third.value
-            }
-        }
-    }
 
 }

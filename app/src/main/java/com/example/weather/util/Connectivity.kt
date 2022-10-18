@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
-import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.flow.MutableStateFlow
 
 fun haveNetwork(context: Context):MutableStateFlow<Boolean>{
@@ -29,8 +28,4 @@ fun haveNetwork(context: Context):MutableStateFlow<Boolean>{
 
     return isConnectStateFlow
 
-
-//    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//    Log.d("NETWORK", "${connectivityManager.isActiveNetworkMetered}")
-//    return !connectivityManager.isActiveNetworkMetered
 }
