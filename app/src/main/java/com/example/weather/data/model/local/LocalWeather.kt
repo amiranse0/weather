@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "weather")
-data class Weather(
+data class LocalWeather(
     @CI(name = "country_name")
     val countryName: String,
     @CI(name = "local_name")
@@ -14,5 +14,5 @@ data class Weather(
     val region: String,
     @PrimaryKey
     @CI(name = "weather")
-    val weather: String, // local time + last update
+    val weather: Int = 1
 )

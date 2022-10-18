@@ -4,21 +4,19 @@ import com.example.weather.data.model.local.*
 import com.example.weather.data.model.remote.RemoteWeather
 
 object Mapper {
-    fun weatherRemoteToLocal(remoteWeather: RemoteWeather): Weather {
+    fun weatherRemoteToLocal(remoteWeather: RemoteWeather): LocalWeather {
         remoteWeather.apply {
-            return Weather(
+            return LocalWeather(
                 countryName = location.country,
                 localTime = location.localTime,
-                region = location.region,
-                weather = location.localTime + remoteCurrent.lastUpdatedTime
+                region = location.region
             )
         }
     }
 
-    fun currentWeatherRemoteToLocal(remoteWeather: RemoteWeather): CurrentWeather {
+    fun currentWeatherRemoteToLocal(remoteWeather: RemoteWeather): LocalCurrentWeather {
         remoteWeather.apply {
-            return CurrentWeather(
-                weather = location.localTime + remoteCurrent.lastUpdatedTime,
+            return LocalCurrentWeather(
                 cloud = remoteCurrent.cloud,
                 conditionIcon = remoteCurrent.condition.icon,
                 condition = remoteCurrent.condition.text,
@@ -36,11 +34,10 @@ object Mapper {
         }
     }
 
-    fun forecastRemoteToLocal(remoteWeather: RemoteWeather, numberDay: Int): Forecast {
+    fun forecastRemoteToLocal(remoteWeather: RemoteWeather, numberDay: Int): LocalForecast {
         remoteWeather.apply {
             val day = remoteForecast.remoteForecastDays[numberDay].remoteDay
-            return Forecast(
-                weather = location.localTime + remoteCurrent.lastUpdatedTime,
+            return LocalForecast(
                 date = remoteForecast.remoteForecastDays[numberDay].date,
                 averageHumidity = day.averageHumidity,
                 averageTemperature = day.averageTemperature,
@@ -54,17 +51,15 @@ object Mapper {
                 maximumWindSpeed = day.maximumWindSpeed,
                 totalPrecipitation = day.totalPrecipitation,
                 uv = day.uv,
-                numberDay = numberDay,
-                forecast = remoteForecast.remoteForecastDays[numberDay].date + remoteCurrent.lastUpdatedTime
+                numberDay = numberDay
             )
         }
     }
 
-    fun hourRemoteToLocal(remoteWeather: RemoteWeather, numberHour: Int, numberDay: Int): Hour {
+    fun hourRemoteToLocal(remoteWeather: RemoteWeather, numberHour: Int, numberDay: Int): LocalHour {
         remoteWeather.apply {
             val hour = remoteForecast.remoteForecastDays[numberDay].remoteHour[numberHour]
-            return Hour(
-                forecast = remoteForecast.remoteForecastDays[numberDay].date + remoteCurrent.lastUpdatedTime,
+            return LocalHour(
                 chanceOfRain = hour.chanceOfRain,
                 chanceOfSnow = hour.chanceOfSnow,
                 cloud = hour.cloud,
@@ -82,11 +77,12 @@ object Mapper {
                 visibility = hour.visibility,
                 windDirection = hour.windDirection,
                 windSpeed = hour.windSpeed,
-                numberHour = numberHour
+                numberHour = numberHour,
+                numberDay = numberDay
             )
         }
     }
 
-
+    //TODO("create a mapper that map local to remote")
 
 }

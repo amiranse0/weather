@@ -2,37 +2,33 @@ package com.example.weather.data.model.local
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.weather.data.model.local.CurrentWeather
-import com.example.weather.data.model.local.Forecast
-import com.example.weather.data.model.local.Hour
-import com.example.weather.data.model.local.Weather
 
 data class WeatherAndCurrentWeather(
     @Embedded
-    val weather: Weather,
+    val localWeather: LocalWeather,
     @Relation(
         parentColumn = "weather",
         entityColumn = "weather"
     )
-    val currentWeather: CurrentWeather
+    val localCurrentWeather: LocalCurrentWeather
 )
 
 data class WeatherWithForecasts(
     @Embedded
-    val weather: Weather,
+    val localWeather: LocalWeather,
     @Relation(
         parentColumn = "weather",
         entityColumn = "weather"
     )
-    val forecasts: List<Forecast>
+    val localForecasts: List<LocalForecast>
 )
 
 data class ForecastWithHours(
     @Embedded
-    val forecast: Forecast,
+    val localForecast: LocalForecast,
     @Relation(
-        parentColumn = "forecast",
-        entityColumn = "forecast"
+        parentColumn = "number_day",
+        entityColumn = "number_day"
     )
-    val hours: List<Hour>
+    val localHours: List<LocalHour>
 )

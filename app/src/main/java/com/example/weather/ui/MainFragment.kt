@@ -25,15 +25,13 @@ import androidx.navigation.fragment.findNavController
 import com.example.weather.R
 import com.example.weather.adapters.MainDaysAdapter
 import com.example.weather.adapters.MainHoursAdapter
-import com.example.weather.data.model.local.Forecast
+import com.example.weather.data.model.local.LocalForecast
 import com.example.weather.data.model.local.WeatherAndCurrentWeather
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.util.ResultOf
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -61,8 +59,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.hoursList.adapter = hoursAdapter
         binding.daysList.adapter = daysAdapter
 
-        val test = Forecast(
-            "amir",
+        val test = LocalForecast(
+            1,
             "1/1/1",
             0.0,
             1.0,
@@ -76,7 +74,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             11.1,
             1.0,
             1.0,
-            "sr",
             1
         )
 
@@ -215,7 +212,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun putDataOnViews(data: WeatherAndCurrentWeather) {
-        binding.locationView.locationTv.text = data.weather.countryName
+        binding.locationView.locationTv.text = data.localWeather.countryName
 
     }
 }

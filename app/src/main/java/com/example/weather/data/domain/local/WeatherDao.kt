@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.weather.data.model.local.Weather
+import com.example.weather.data.model.local.LocalWeather
 import com.example.weather.data.model.local.WeatherAndCurrentWeather
 import com.example.weather.data.model.local.WeatherWithForecasts
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WeatherDao {
     @Query("SELECT * FROM weather LIMIT 1")
-    fun getWeather(): Flow<Weather>
+    fun getWeather(): Flow<LocalWeather>
 
     @Transaction
     @Query("SELECT * FROM weather LIMIT 1")
@@ -24,7 +24,7 @@ interface WeatherDao {
     fun getWeatherWithForecasts(): Flow<List<WeatherWithForecasts>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addNewWeather(weather: Weather)
+    suspend fun addNewWeather(localWeather: LocalWeather)
 
     @Query("DELETE FROM weather")
     fun deleteWeatherTable()

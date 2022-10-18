@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
-import com.example.weather.data.model.local.Hour
+import com.example.weather.data.model.local.LocalHour
 import com.example.weather.databinding.HoursCardViewBinding
 
-class MainHoursAdapter : ListAdapter<Hour, MainHoursAdapter.HourViewHolder>(
+class MainHoursAdapter : ListAdapter<LocalHour, MainHoursAdapter.HourViewHolder>(
     MainHourAdapterDiffCallback()
 ) {
 
@@ -41,13 +41,13 @@ class MainHoursAdapter : ListAdapter<Hour, MainHoursAdapter.HourViewHolder>(
     }
 }
 
-private class MainHourAdapterDiffCallback : DiffUtil.ItemCallback<Hour>() {
-    override fun areItemsTheSame(oldItem: Hour, newItem: Hour): Boolean =
+private class MainHourAdapterDiffCallback : DiffUtil.ItemCallback<LocalHour>() {
+    override fun areItemsTheSame(oldItem: LocalHour, newItem: LocalHour): Boolean =
         oldItem.time == newItem.time
 
     override fun areContentsTheSame(
-        oldItem: Hour,
-        newItem: Hour
-    ): Boolean = oldItem.forecast == newItem.forecast
+        oldItem: LocalHour,
+        newItem: LocalHour
+    ): Boolean = oldItem.numberHour == newItem.numberDay && oldItem.numberDay == newItem.numberDay
 
 }

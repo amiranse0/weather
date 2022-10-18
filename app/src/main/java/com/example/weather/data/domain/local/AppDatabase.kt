@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.weather.data.model.local.CurrentWeather
-import com.example.weather.data.model.local.Forecast
-import com.example.weather.data.model.local.Hour
-import com.example.weather.data.model.local.Weather
+import com.example.weather.data.model.local.LocalCurrentWeather
+import com.example.weather.data.model.local.LocalForecast
+import com.example.weather.data.model.local.LocalHour
+import com.example.weather.data.model.local.LocalWeather
 
-@Database(entities = [Hour::class, Weather::class, CurrentWeather::class, Forecast::class], version = 1)
+@Database(entities = [LocalHour::class, LocalWeather::class, LocalCurrentWeather::class, LocalForecast::class], version = 1)
 abstract class AppDatabase:RoomDatabase() {
 
     abstract fun weatherDao(): WeatherDao

@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather.R
-import com.example.weather.data.model.local.Forecast
+import com.example.weather.data.model.local.LocalForecast
 import com.example.weather.databinding.DayCardViewBinding
 
-class MainDaysAdapter : ListAdapter<Forecast, MainDaysAdapter.DayViewHolder>(
+class MainDaysAdapter : ListAdapter<LocalForecast, MainDaysAdapter.DayViewHolder>(
     MainDayDiffCallback()
 ) {
 
@@ -41,11 +41,11 @@ class MainDaysAdapter : ListAdapter<Forecast, MainDaysAdapter.DayViewHolder>(
     }
 }
 
-class MainDayDiffCallback : DiffUtil.ItemCallback<Forecast>() {
-    override fun areItemsTheSame(oldItem: Forecast, newItem: Forecast): Boolean =
-        oldItem.forecast == newItem.forecast
+class MainDayDiffCallback : DiffUtil.ItemCallback<LocalForecast>() {
+    override fun areItemsTheSame(oldItem: LocalForecast, newItem: LocalForecast): Boolean =
+        oldItem.numberDay == newItem.numberDay
 
-    override fun areContentsTheSame(oldItem: Forecast, newItem: Forecast): Boolean {
+    override fun areContentsTheSame(oldItem: LocalForecast, newItem: LocalForecast): Boolean {
         return oldItem.numberDay == newItem.numberDay
     }
 }

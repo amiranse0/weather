@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "forecast")
-data class Forecast(
+data class LocalForecast(
     @CI(name = "weather")
-    val weather: String, // local time + last update
+    val weather: Int = 1,
     @CI(name = "date")
     val date:String,
     @CI(name = "average_humidity")
@@ -35,8 +35,6 @@ data class Forecast(
     @CI(name = "uv")
     val uv: Double,
     @PrimaryKey
-    @CI(name = "forecast")
-    val forecast: String, //date + last update
     @CI(name = "number_day")
     val numberDay:Int
 )

@@ -3,12 +3,11 @@ package com.example.weather.data.model.local
 import androidx.room.ColumnInfo as CI
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.weather.data.model.remote.Condition
 
 @Entity(tableName = "hour")
-data class Hour(
-    @CI(name = "forecast")
-    val forecast: String, //date + last update
+data class LocalHour(
+    @CI(name = "number_day")
+    val numberDay: Int,
     @CI(name = "chance_of_rain")
     val chanceOfRain: Int,
     @CI(name = "chance_of_snow")

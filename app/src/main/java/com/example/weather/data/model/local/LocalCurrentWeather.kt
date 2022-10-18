@@ -5,10 +5,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "current")
-data class CurrentWeather(
+data class LocalCurrentWeather(
     @PrimaryKey
     @CI(name = "weather")
-    val weather: String, // local time + last update
+    val weather: Int = 1,
     @CI(name = "cloud")
     val cloud: Int,
     @CI(name = "condition_icon")
