@@ -32,6 +32,8 @@ import com.example.weather.util.ResultOf
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -53,6 +55,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            viewModel.mock()
+        }
 
         initializingVariables(view)
 
@@ -133,7 +139,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         }
                         is ResultOf.Success -> {
                             activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                                View.GONE
+                                View.INVISIBLE
                             activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
                                 View.VISIBLE
                             putDataOnViews(it.data)

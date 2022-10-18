@@ -77,9 +77,6 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
-    //location
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
-
     //room
     def room_version = "2.4.3"
     implementation "androidx.room:room-runtime:$room_version"
@@ -94,8 +91,9 @@ dependencies {
 
     //Play Services
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.0'
 
     //work manager
     implementation "androidx.work:work-runtime-ktx:2.7.1"
+
 }

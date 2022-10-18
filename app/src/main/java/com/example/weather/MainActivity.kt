@@ -1,27 +1,18 @@
 package com.example.weather
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
 import android.app.Dialog
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.view.children
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.navigation.createGraph
 import androidx.navigation.findNavController
+import androidx.work.*
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.databinding.DialogNotificationCustomizationBinding
 import com.example.weather.receivers.AlarmNotificationReceiver
+import com.example.weather.workers.NotificationWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
@@ -61,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    @SuppressLint("ResourceType")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_go_to_map -> {

@@ -7,15 +7,14 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.work.CoroutineWorker
+import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.weather.R
 import com.example.weather.data.domain.WeatherRepository
 import javax.inject.Inject
 
 class NotificationWorker @Inject constructor(
-    private val repository: WeatherRepository,
     private val context: Context,
     private val workerParameters: WorkerParameters
 ): CoroutineWorker(context, workerParameters) {
@@ -32,7 +31,7 @@ class NotificationWorker @Inject constructor(
 
         Log.d("ALARM", "Worker")
 
-        return Result.retry()
+        return Result.success()
     }
 
     private fun notification(){

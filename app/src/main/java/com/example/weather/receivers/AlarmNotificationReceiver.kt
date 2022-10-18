@@ -5,14 +5,11 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.work.*
 import com.example.weather.MainActivity
 import com.example.weather.workers.NotificationWorker
 import java.util.concurrent.TimeUnit
-
 
 class AlarmNotificationReceiver : BroadcastReceiver() {
     companion object {
@@ -34,7 +31,7 @@ class AlarmNotificationReceiver : BroadcastReceiver() {
         val notificationWorker = WorkManager.getInstance(context!!)
         notificationWorker.enqueueUniquePeriodicWork(
             MainActivity.NOTIFICATION_WORKER_ID,
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.KEEP,
             notificationRequest
         )
 
@@ -57,7 +54,6 @@ class AlarmNotificationReceiver : BroadcastReceiver() {
         )
         Log.d("ALARM", "SET")
     }
-
 
     fun cancelAlarm(context: Context) {
         val intent = Intent(context, AlarmNotificationReceiver::class.java)
