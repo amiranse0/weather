@@ -12,6 +12,8 @@ data class LocalWeather(
     val localTime: String,
     @CI(name = "region")
     val region: String,
+    @CI(name = "city")
+    val city:String,
     @PrimaryKey
     @CI(name = "weather")
     val weather: Int = 1

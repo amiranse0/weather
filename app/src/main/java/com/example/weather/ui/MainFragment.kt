@@ -112,7 +112,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun weatherAndCurrentWeather() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.weatherAndCurrentWeatherStateFlow.collect {
+                viewModel.dataStatFlow.collect {
                     when (it) {
                         is ResultOf.Loading -> {
                             activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
@@ -135,7 +135,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                 View.INVISIBLE
                             activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
                                 View.VISIBLE
-                            putDataOnViews(it.data)
+                            putDataOnViews(it.data.first)
                             Log.d("TAG", "Success")
                         }
                     }
@@ -201,7 +201,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                             sharedPref?.getString(getString(R.string.coordinates), "Tehran")
                                 ?: "Toronto"
                     }
-                    TODO("send request for current location")
+                    viewModel.getData(coordinates)
                 }
         }
     }

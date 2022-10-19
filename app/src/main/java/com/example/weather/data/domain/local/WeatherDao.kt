@@ -17,11 +17,11 @@ interface WeatherDao {
 
     @Transaction
     @Query("SELECT * FROM weather LIMIT 1")
-    fun getWeatherAndCurrentWeather(): Flow<WeatherAndCurrentWeather>
+    suspend fun getWeatherAndCurrentWeather(): WeatherAndCurrentWeather
 
     @Transaction
     @Query("SELECT * FROM weather")
-    fun getWeatherWithForecasts(): Flow<List<WeatherWithForecasts>>
+    suspend fun getWeatherWithForecasts(): List<WeatherWithForecasts>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNewWeather(localWeather: LocalWeather)

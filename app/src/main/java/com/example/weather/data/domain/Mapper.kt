@@ -1,44 +1,46 @@
 package com.example.weather.data.domain
 
 import com.example.weather.data.model.local.*
+import com.example.weather.data.model.remote.Location
 import com.example.weather.data.model.remote.RemoteWeather
 
 object Mapper {
     fun weatherRemoteToLocal(remoteWeather: RemoteWeather): LocalWeather {
-        remoteWeather.apply {
-            return LocalWeather(
-                countryName = location.country,
-                localTime = location.localTime,
-                region = location.region
+        return remoteWeather.location.let {
+            LocalWeather(
+                countryName = it.country,
+                localTime = it.localTime,
+                region = it.region,
+                city = it.name
             )
         }
     }
 
     fun currentWeatherRemoteToLocal(remoteWeather: RemoteWeather): LocalCurrentWeather {
-        remoteWeather.apply {
-            return LocalCurrentWeather(
-                cloud = remoteCurrent.cloud,
-                conditionIcon = remoteCurrent.condition.icon,
-                condition = remoteCurrent.condition.text,
-                feelsLikeTemperature = remoteCurrent.feelsLikeTemperature,
-                gust = remoteCurrent.gustInKph,
-                humidity = remoteCurrent.humidity,
-                lastUpdated = remoteCurrent.lastUpdatedTime,
-                precipitation = remoteCurrent.precipitation,
-                temperature = remoteCurrent.temperature,
-                visibility = remoteCurrent.visibility,
-                uv = remoteCurrent.uv,
-                windSpeed = remoteCurrent.windSpeed,
-                windDirection = remoteCurrent.windDirection
+        return remoteWeather.let {
+            LocalCurrentWeather(
+                cloud = it.remoteCurrent.cloud,
+                conditionIcon = it.remoteCurrent.condition.icon,
+                condition = it.remoteCurrent.condition.text,
+                feelsLikeTemperature = it.remoteCurrent.feelsLikeTemperature,
+                gust = it.remoteCurrent.gustInKph,
+                humidity = it.remoteCurrent.humidity,
+                lastUpdated = it.remoteCurrent.lastUpdatedTime,
+                precipitation = it.remoteCurrent.precipitation,
+                temperature = it.remoteCurrent.temperature,
+                visibility = it.remoteCurrent.visibility,
+                uv = it.remoteCurrent.uv,
+                windSpeed = it.remoteCurrent.windSpeed,
+                windDirection = it.remoteCurrent.windDirection
             )
         }
     }
 
     fun forecastRemoteToLocal(remoteWeather: RemoteWeather, numberDay: Int): LocalForecast {
-        remoteWeather.apply {
-            val day = remoteForecast.remoteForecastDays[numberDay].remoteDay
-            return LocalForecast(
-                date = remoteForecast.remoteForecastDays[numberDay].date,
+        return remoteWeather.let {
+            val day = it.remoteForecast.remoteForecastDays[numberDay].remoteDay
+            LocalForecast(
+                date = it.remoteForecast.remoteForecastDays[numberDay].date,
                 averageHumidity = day.averageHumidity,
                 averageTemperature = day.averageTemperature,
                 averageVisibility = day.averageVisibility,
@@ -56,10 +58,14 @@ object Mapper {
         }
     }
 
-    fun hourRemoteToLocal(remoteWeather: RemoteWeather, numberHour: Int, numberDay: Int): LocalHour {
-        remoteWeather.apply {
-            val hour = remoteForecast.remoteForecastDays[numberDay].remoteHour[numberHour]
-            return LocalHour(
+    fun hourRemoteToLocal(
+        remoteWeather: RemoteWeather,
+        numberHour: Int,
+        numberDay: Int
+    ): LocalHour {
+        return remoteWeather.let {
+            val hour = it.remoteForecast.remoteForecastDays[numberDay].remoteHour[numberHour]
+            LocalHour(
                 chanceOfRain = hour.chanceOfRain,
                 chanceOfSnow = hour.chanceOfSnow,
                 cloud = hour.cloud,
@@ -84,5 +90,19 @@ object Mapper {
     }
 
     //TODO("create a mapper that map local to remote")
+    /*fun localToRemote(
+        localWeatherAndCurrentWeather: WeatherAndCurrentWeather,
+        localWeatherWithForecasts: List<WeatherWithForecasts>,
+        localForecastsWithHours: List<ForecastWithHours>
+    ): RemoteWeather {
+        val location:Location = localWeatherAndCurrentWeather.localWeather.let {
+            Location(
+                country = it.countryName,
+                localTime = it.localTime,
+                name = it.city,
+                region = it.region
+            )
+        }
+    }*/
 
 }

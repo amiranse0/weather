@@ -1,7 +1,7 @@
 package com.example.weather.ui
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.weather.MainApp
 import com.example.weather.data.domain.WeatherRepository
@@ -12,14 +12,13 @@ import com.example.weather.data.model.local.WeatherWithForecasts
 import com.example.weather.util.ResultOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val weatherRepository: WeatherRepository) :
     ViewModel() {
-
     private val queryMap = mutableMapOf(
         "key" to ApiConfigurations.API_KEY,
         "days" to "7",
@@ -27,15 +26,39 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
         "alerts" to "no"
     )
 
-    private suspend fun oldDataAndError(isDataExistInLocal: Boolean, errorMessage: String){
-        if (isDataExistInLocal){
-            TODO("toast that something is wrong and show old data")
-        }else{
-            TODO("Show the error")
+    private val _weatherAndCurrentWeatherStateFlow: MutableStateFlow<ResultOf<WeatherAndCurrentWeather>> =
+        MutableStateFlow(ResultOf.Loading)
+    val weatherAndCurrentWeatherStateFlow = _weatherAndCurrentWeatherStateFlow
+    private val _weatherWithForecastsStateFlow: MutableStateFlow<ResultOf<List<WeatherWithForecasts>>> =
+        MutableStateFlow(ResultOf.Loading)
+    val weatherWithForecastsStateFlow = _weatherWithForecastsStateFlow
+    private val _forecastWithHoursStateFlow: MutableStateFlow<ResultOf<List<ForecastWithHours>>> =
+        MutableStateFlow(ResultOf.Loading)
+    private val forecastWithHoursStateFlow = _forecastWithHoursStateFlow
+
+    private val _dataStateFlow: MutableStateFlow<ResultOf<Triple<WeatherAndCurrentWeather, List<WeatherWithForecasts>, List<ForecastWithHours>>>> =
+        MutableStateFlow(ResultOf.Loading)
+    val dataStatFlow = _dataStateFlow
+
+    fun getData(query: String) {
+        val scopeQueryMap = queryMap
+        scopeQueryMap["q"] = query
+        viewModelScope.launch {
+            weatherRepository.getData(scopeQueryMap).collect {
+                _dataStateFlow.emit(it)
+            }
         }
     }
 
-    suspend fun mainFunction(query: Map<String, String>) {
+    private suspend fun oldDataAndError(isDataExistInLocal: Boolean, errorMessage: String) {
+        if (isDataExistInLocal) {
+            /*TODO("toast that something is wrong and show old data")*/
+        } else {
+            /*TODO("Show the error")*/
+        }
+    }
+
+    fun mainFunction(query: Map<String, String>) {
         viewModelScope.launch {
             val isDataExistInLocal = weatherRepository.isDataExistInLocal()
             MainApp.isConnected().collect {
@@ -45,7 +68,7 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
                         weatherRepository.saveDataToLocal(data)
 
 
-                    } catch (e:Exception){
+                    } catch (e: Exception) {
                         oldDataAndError(isDataExistInLocal, e.message.toString())
                     }
                 } else {
@@ -56,14 +79,5 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
         }
     }
 
-    private val _weatherAndCurrentWeatherStateFlow: MutableStateFlow<ResultOf<WeatherAndCurrentWeather>> =
-        MutableStateFlow(ResultOf.Loading)
-    val weatherAndCurrentWeatherStateFlow = _weatherAndCurrentWeatherStateFlow
-    private val _weatherWithForecastsStateFlow: MutableStateFlow<ResultOf<List<WeatherWithForecasts>>> =
-        MutableStateFlow(ResultOf.Loading)
-    val weatherWithForecastsStateFlow = _weatherWithForecastsStateFlow
-    private val _forecastWithHoursStateFlow: MutableStateFlow<ResultOf<List<ForecastWithHours>>> =
-        MutableStateFlow(ResultOf.Loading)
-    val forecastWithHoursStateFlow = _forecastWithHoursStateFlow
 
 }

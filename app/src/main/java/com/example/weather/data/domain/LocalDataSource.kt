@@ -13,11 +13,11 @@ class LocalDataSource @Inject constructor(
     private val forecastDao = database.forecastDao()
     private val hourDao = database.hourDao()
 
-    fun getWeatherAndCurrentWeather() = weatherDao.getWeatherAndCurrentWeather()
+    suspend fun getWeatherAndCurrentWeather() = weatherDao.getWeatherAndCurrentWeather()
 
-    fun getWeatherWithForecasts() = weatherDao.getWeatherWithForecasts()
+    suspend fun getWeatherWithForecasts() = weatherDao.getWeatherWithForecasts()
 
-    fun getForecastWithHours() = forecastDao.getForecastWithHours()
+    suspend fun getForecastWithHours() = forecastDao.getForecastWithHours()
 
     suspend fun isDataExistInLocal() = weatherDao.getNumberOfRecordsOfWeather() != 0
 
