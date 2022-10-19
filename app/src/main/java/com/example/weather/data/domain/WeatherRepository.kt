@@ -2,11 +2,7 @@ package com.example.weather.data.domain
 
 import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.util.ResultOf
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -31,20 +27,25 @@ class WeatherRepository @Inject constructor(
                 emit(ResultOf.Loading)
                 val data = fetch(query)
                 saveDataToLocal(data)
-                val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()
-                val weatherWithForecasts = localDataSource.getWeatherWithForecasts()
-                val forecastsWithHours = localDataSource.getForecastWithHours()
-                emit(
-                    ResultOf.Success(
-                        Triple(
-                            weatherAndCurrentWeather,
-                            weatherWithForecasts,
-                            forecastsWithHours
-                        )
-                    )
-                )
             } catch (e: Exception) {
                 emit(ResultOf.Error(e))
+            } finally {
+                if (localDataSource.isDataExistInLocal()){
+                    val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()
+                    val weatherWithForecasts = localDataSource.getWeatherWithForecasts()
+                    val forecastsWithHours = localDataSource.getForecastWithHours()
+                    emit(
+                        ResultOf.Success(
+                            Triple(
+                                weatherAndCurrentWeather,
+                                weatherWithForecasts,
+                                forecastsWithHours
+                            )
+                        )
+                    )
+                } else{
+                    emit(ResultOf.Error(Exception("No data in local")))
+                }
             }
             kotlinx.coroutines.delay(TIME_STEP)
         }

@@ -11,8 +11,9 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.Toast
-import android.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
@@ -21,12 +22,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.example.weather.R
 import com.example.weather.adapters.MainDaysAdapter
 import com.example.weather.adapters.MainHoursAdapter
-import com.example.weather.data.model.local.LocalForecast
-import com.example.weather.data.model.local.WeatherAndCurrentWeather
+import com.example.weather.data.model.local.*
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.util.ResultOf
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -56,8 +55,27 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         initializingVariables(view)
 
-        binding.hoursList.adapter = hoursAdapter
-        binding.daysList.adapter = daysAdapter
+
+        val appBar: Toolbar? = (activity as? AppCompatActivity)?.findViewById(R.id.my_toolbar)
+        Log.d("MENU", appBar.toString())
+        (activity as? AppCompatActivity)?.setSupportActionBar(appBar);
+        val actionBar: ActionBar? = (activity as? AppCompatActivity)?.supportActionBar
+
+        appBar?.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_notification -> {
+                    Toast.makeText(context, "notif", Toast.LENGTH_LONG).show()
+                    true
+                }
+                R.id.action_go_to_map -> {
+                    Toast.makeText(context, "map", Toast.LENGTH_LONG).show()
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
 
         val test = LocalForecast(
             1,
@@ -83,28 +101,27 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         getLatestLocation()
 
         weatherAndCurrentWeather()
-
-        appBarOptionsSelection()
-
     }
 
-    private fun appBarOptionsSelection() {
-        val mainActivity = activity as AppCompatActivity?
-
-        val toolbar: Toolbar? = mainActivity?.supportActionBar?.customView as Toolbar?
-
-        Log.d("TAG", "$toolbar")
-        toolbar?.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_notification -> {
-                    true
-                }
-                R.id.action_go_to_map -> {
-                    findNavController().navigate(R.id.action_mainFragment_to_mapFragment)
-                    Toast.makeText(requireContext(), "TEST", Toast.LENGTH_LONG).show()
-                    true
-                }
-                else -> false
+    private fun handleUiState(state: ResultOf<*>) {
+        val progressBar = activity?.findViewById<ProgressBar>(R.id.progress_bar)
+        val errorLayout = activity?.findViewById<ConstraintLayout>(R.id.error_view)
+        val resultView = activity?.findViewById<ScrollView>(R.id.result_view)
+        when (state) {
+            is ResultOf.Error -> {
+                errorLayout?.visibility = View.VISIBLE
+                progressBar?.visibility = View.INVISIBLE
+                resultView?.visibility = View.INVISIBLE
+            }
+            is ResultOf.Loading -> {
+                errorLayout?.visibility = View.INVISIBLE
+                progressBar?.visibility = View.VISIBLE
+                resultView?.visibility = View.INVISIBLE
+            }
+            is ResultOf.Success -> {
+                errorLayout?.visibility = View.INVISIBLE
+                progressBar?.visibility = View.INVISIBLE
+                resultView?.visibility = View.VISIBLE
             }
         }
     }
@@ -113,29 +130,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dataStatFlow.collect {
+                    handleUiState(it)
                     when (it) {
                         is ResultOf.Loading -> {
-                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                                View.VISIBLE
-                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
-                                View.GONE
-                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
-                                View.INVISIBLE
                             Log.d("TAG", "Loading")
                         }
                         is ResultOf.Error -> {
-                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                                View.GONE
-                            activity?.findViewById<ConstraintLayout>(R.id.error_view)?.visibility =
-                                View.VISIBLE
                             Log.d("TAG", "Error")
                         }
                         is ResultOf.Success -> {
-                            activity?.findViewById<ProgressBar>(R.id.progress_bar)?.visibility =
-                                View.INVISIBLE
-                            activity?.findViewById<ScrollView>(R.id.result_view)?.visibility =
-                                View.VISIBLE
-                            putDataOnViews(it.data.first)
+
+                            putDataOnViews(it.data)
                             Log.d("TAG", "Success")
                         }
                     }
@@ -209,10 +214,26 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun initializingVariables(view: View) {
         binding = FragmentMainBinding.bind(view)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        binding.hoursList.adapter = hoursAdapter
+        binding.daysList.adapter = daysAdapter
     }
 
-    private fun putDataOnViews(data: WeatherAndCurrentWeather) {
-        binding.locationView.locationTv.text = data.localWeather.countryName
+    private fun putDataOnViews(data: Triple<WeatherAndCurrentWeather, List<WeatherWithForecasts>, List<ForecastWithHours>>) {
+        locationUi(data.first.localWeather)
+        generalVariablesUi(data.first.localCurrentWeather)
 
+    }
+
+    private fun generalVariablesUi(localCurrentWeather: LocalCurrentWeather) {
+        localCurrentWeather.apply {
+            binding.todayView.
+        }
+    }
+
+    private fun locationUi(localWeather: LocalWeather){
+        localWeather.apply {
+            binding.locationView.locationTv.text =
+                context?.getString(R.string.title_name_template, countryName, region, name)
+        }
     }
 }

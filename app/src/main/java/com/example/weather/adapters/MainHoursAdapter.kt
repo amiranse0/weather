@@ -29,7 +29,7 @@ class MainHoursAdapter : ListAdapter<LocalHour, MainHoursAdapter.HourViewHolder>
 
     override fun onBindViewHolder(holder: HourViewHolder, position: Int) {
         val item = getItem(position)
-        holder.binding.hourTimeTv.text = item.time
+        holder.binding.hourTimeTv.text = item.timeDate
         holder.binding.tempHourTv.text = holder.context.getString(
             R.string.temperature_template,
             item.temperature
@@ -43,7 +43,7 @@ class MainHoursAdapter : ListAdapter<LocalHour, MainHoursAdapter.HourViewHolder>
 
 private class MainHourAdapterDiffCallback : DiffUtil.ItemCallback<LocalHour>() {
     override fun areItemsTheSame(oldItem: LocalHour, newItem: LocalHour): Boolean =
-        oldItem.time == newItem.time
+        oldItem.timeDate == newItem.timeDate
 
     override fun areContentsTheSame(
         oldItem: LocalHour,

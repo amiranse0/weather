@@ -8,12 +8,17 @@
         android:id="@+id/mainFragment"
         android:name="com.example.weather.ui.MainFragment"
         android:label="MainFragment" >
-        <action
-            android:id="@+id/action_mainFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.weather.ui.MapFragment"
-        android:label="MapFragment" />
+        android:label="MapFragment" >
+        <action
+            android:id="@+id/action_mapFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_to_mapFragment"
+        app:destination="@+id/mapFragment"/>
 </navigation>

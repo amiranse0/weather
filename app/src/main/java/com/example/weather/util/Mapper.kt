@@ -1,17 +1,18 @@
-package com.example.weather.data.domain
+package com.example.weather.util
 
 import com.example.weather.data.model.local.*
-import com.example.weather.data.model.remote.Location
 import com.example.weather.data.model.remote.RemoteWeather
+import java.util.Calendar
 
 object Mapper {
     fun weatherRemoteToLocal(remoteWeather: RemoteWeather): LocalWeather {
         return remoteWeather.location.let {
             LocalWeather(
                 countryName = it.country,
-                localTime = it.localTime,
+                localDate = mapRemoteDateToLocalTemplateDate(it.localTime.split(" ").first()),
                 region = it.region,
-                city = it.name
+                name = it.name,
+                localTime = it.localTime.split(" ")[1]
             )
         }
     }
@@ -25,7 +26,8 @@ object Mapper {
                 feelsLikeTemperature = it.remoteCurrent.feelsLikeTemperature,
                 gust = it.remoteCurrent.gustInKph,
                 humidity = it.remoteCurrent.humidity,
-                lastUpdated = it.remoteCurrent.lastUpdatedTime,
+                lastUpdatedTime = it.remoteCurrent.lastUpdatedTime.split(" ")[1],
+                lastUpdatedDate = mapRemoteDateToLocalTemplateDate(it.remoteCurrent.lastUpdatedTime.split(" ")[0]),
                 precipitation = it.remoteCurrent.precipitation,
                 temperature = it.remoteCurrent.temperature,
                 visibility = it.remoteCurrent.visibility,
@@ -73,7 +75,7 @@ object Mapper {
                 conditionIcon = hour.condition.icon,
                 feelsLikeTemperature = hour.feelsLikeTemperature,
                 humidity = hour.humidity,
-                time = hour.time,
+                timeDate = hour.time,
                 uv = hour.uv,
                 willItRain = hour.willItRain,
                 willItSnow = hour.willItSnow,
@@ -84,25 +86,52 @@ object Mapper {
                 windDirection = hour.windDirection,
                 windSpeed = hour.windSpeed,
                 numberHour = numberHour,
-                numberDay = numberDay
+                numberDay = numberDay,
+                time = hour.time.split(" ")[1],
+                date = mapRemoteDateToLocalTemplateDate(hour.time.split(" ")[0])
             )
         }
     }
 
-    //TODO("create a mapper that map local to remote")
-    /*fun localToRemote(
-        localWeatherAndCurrentWeather: WeatherAndCurrentWeather,
-        localWeatherWithForecasts: List<WeatherWithForecasts>,
-        localForecastsWithHours: List<ForecastWithHours>
-    ): RemoteWeather {
-        val location:Location = localWeatherAndCurrentWeather.localWeather.let {
-            Location(
-                country = it.countryName,
-                localTime = it.localTime,
-                name = it.city,
-                region = it.region
+    fun mapRemoteDateToLocalTemplateDate(date: String): String {
+        return date.let {
+            val calendar = Calendar.getInstance()
+            val listDate: List<String> = it.split("-")
+            calendar.set(
+                listDate[0].toInt(),
+                listDate[1].toInt(),
+                listDate[2].toInt()
             )
+            val dayOfWeek: String = calendar.get(Calendar.DAY_OF_WEEK).let { it1 ->
+                when (it1) {
+                    1 -> "Sun"
+                    2 -> "Mon"
+                    3 -> "Tue"
+                    4 -> "Wed"
+                    5 -> "Thu"
+                    6 -> "Fri"
+                    7 -> "Sat"
+                    else -> "None"
+                }
+            }
+            val month: String = calendar.get(Calendar.MONTH).let { it2 ->
+                when (it2) {
+                    0 -> "Jan"
+                    1 -> "Feb"
+                    2 -> "Mar"
+                    3 -> "Apr"
+                    4 -> "May"
+                    5 -> "Jun"
+                    6 -> "Jul"
+                    7 -> "Aug"
+                    8 -> "Sep"
+                    9 -> "Oct"
+                    10 -> "Nov"
+                    11 -> "Dec"
+                    else -> "None"
+                }
+            }
+            "$dayOfWeek, ${calendar.get(Calendar.DATE)} $month"
         }
-    }*/
-
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.weather
 
-import android.annotation.SuppressLint
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,11 +7,9 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.navigation.findNavController
-import androidx.work.*
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.databinding.DialogNotificationCustomizationBinding
 import com.example.weather.receivers.AlarmNotificationReceiver
-import com.example.weather.workers.NotificationWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
@@ -55,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_go_to_map -> {
-                findNavController(R.id.fragment).navigate(R.id.action_mainFragment_to_mapFragment)
+                /*findNavController(R.id.fragment).navigate(R.id.action_mainFragment_to_dayDetailFragment)*/
                 true
             }
             R.id.action_notification -> {

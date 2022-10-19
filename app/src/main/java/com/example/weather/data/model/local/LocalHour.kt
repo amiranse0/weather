@@ -22,9 +22,13 @@ data class LocalHour(
     val feelsLikeTemperature: Double,
     @CI(name = "humidity")
     val humidity: Int,
-    @CI(name = "time")
+    @CI(name = "time_date")
     @PrimaryKey
+    val timeDate: String,
+    @CI(name = "time")
     val time: String,
+    @CI(name = "date")
+    val date: String,
     @CI(name = "uv")
     val uv: Double,
     @CI(name = "will_it_rain")

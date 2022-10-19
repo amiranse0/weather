@@ -21,8 +21,10 @@ data class LocalCurrentWeather(
     val gust:Double,
     @CI(name = "humidity")
     val humidity: Int,
-    @CI(name = "last_update")
-    val lastUpdated: String,
+    @CI(name = "last_update_time")
+    val lastUpdatedTime: String,
+    @CI(name = "last_updated_date")
+    val lastUpdatedDate: String,
     @CI(name = "precipitation")
     val precipitation: Double,
     @CI(name = "temperature")
