@@ -24,11 +24,26 @@ class WeatherRepository @Inject constructor(
     fun getData(query: Map<String, String>) = flow {
         while (true){
             try {
-                emit(ResultOf.Loading)
+                if (localDataSource.isDataExistInLocal()){
+                    val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()
+                    val weatherWithForecasts = localDataSource.getWeatherWithForecasts()
+                    val forecastsWithHours = localDataSource.getForecastWithHours()
+                    emit(
+                        ResultOf.Success(
+                            Triple(
+                                weatherAndCurrentWeather,
+                                weatherWithForecasts,
+                                forecastsWithHours
+                            )
+                        )
+                    )
+                } else{
+                    /*emit(ResultOf.Loading)*/
+                }
                 val data = fetch(query)
                 saveDataToLocal(data)
-            } catch (e: Exception) {
-                emit(ResultOf.Error(e))
+            } catch (_: Exception) {
+
             } finally {
                 if (localDataSource.isDataExistInLocal()){
                     val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()

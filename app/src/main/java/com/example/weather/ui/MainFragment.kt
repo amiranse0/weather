@@ -1,10 +1,7 @@
 package com.example.weather.ui
 
-import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,11 +9,9 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -28,17 +23,12 @@ import com.example.weather.adapters.MainHoursAdapter
 import com.example.weather.data.model.local.*
 import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.util.ResultOf
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main) {
-
-    private val sharedPref: SharedPreferences? =
-        activity?.getPreferences(Context.MODE_PRIVATE)
 
     private lateinit var binding: FragmentMainBinding
 
@@ -47,8 +37,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val hoursAdapter = MainHoursAdapter()
 
     private val daysAdapter = MainDaysAdapter()
-
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,30 +65,20 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }
 
-        val test = LocalForecast(
-            1,
-            "1/1/1",
-            0.0,
-            1.0,
-            20.0,
-            "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.facebook.com%2FLiverpoolFC%2F&psig=AOvVaw3tIk6y7jEbqG8JPXA1i6UX&ust=1665905595457000&source=images&cd=vfe&ved=0CA0QjRxqFwoTCOjjo4zc4foCFQAAAAAdAAAAABAD",
-            "ok",
-            1,
-            1,
-            1.0,
-            1.0,
-            11.1,
-            1.0,
-            1.0,
-            1
-        )
-
-        val list = listOf(test, test, test, test, test, test, test, test)
-        daysAdapter.submitList(list)
-
-        getLatestLocation()
+        primaryRequest()
 
         weatherAndCurrentWeather()
+    }
+
+    private fun primaryRequest(){
+        val sharedPref: SharedPreferences =
+            requireActivity().getPreferences(Context.MODE_PRIVATE)
+
+        val coordinates =
+            sharedPref.getString(getString(R.string.coordinates), "Tehran")
+                ?: "Toronto"
+
+        viewModel.getData(coordinates)
     }
 
     private fun handleUiState(state: ResultOf<*>) {
@@ -149,71 +127,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
-    private fun getLatestLocation() {
-
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
-            ) { permissions ->
-                when {
-                    permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                        Toast.makeText(context, "precise permission granted", Toast.LENGTH_LONG)
-                            .show()
-                    }
-                    permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                        Toast.makeText(context, "approximate permission granted", Toast.LENGTH_LONG)
-                            .show()
-                    }
-                    else -> {
-                        Toast.makeText(
-                            context,
-                            "please get permission to this app",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-            }
-
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-            return
-        } else {
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    val coordinates: String
-                    Log.d("LOCATION", location.toString())
-                    if (location != null) {
-                        coordinates = "${location.latitude}, ${location.longitude}"
-                        with(sharedPref?.edit()) {
-                            this?.putString(getString(R.string.coordinates), coordinates)
-                            this?.apply()
-                        }
-                    } else {
-                        coordinates =
-                            sharedPref?.getString(getString(R.string.coordinates), "Tehran")
-                                ?: "Toronto"
-                    }
-                    viewModel.getData(coordinates)
-                }
-        }
-    }
-
     private fun initializingVariables(view: View) {
         binding = FragmentMainBinding.bind(view)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         binding.hoursList.adapter = hoursAdapter
         binding.daysList.adapter = daysAdapter
     }
@@ -225,6 +140,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         val todayHoursList:List<LocalHour> = data.third.first().localHours
         hoursAdapter.submitList(todayHoursList)
+
+        val daysList:List<LocalForecast> = data.second.first().localForecasts
+        daysAdapter.submitList(daysList)
     }
 
 }

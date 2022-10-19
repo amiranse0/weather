@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import android.widget.Toast
 import kotlinx.coroutines.flow.MutableStateFlow
 
 fun haveNetwork(context: Context):MutableStateFlow<Boolean>{
@@ -15,11 +16,13 @@ fun haveNetwork(context: Context):MutableStateFlow<Boolean>{
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
             isConnectStateFlow.value = true
+            Toast.makeText(context, "internet connected!", Toast.LENGTH_SHORT).show()
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
             isConnectStateFlow.value = false
+            Toast.makeText(context, "no connection", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -21,6 +21,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun mapCustomizations() {
         binding.mapView.mapStyle = NeshanMapStyle.NESHAN_NIGHT
-        //binding.mapView.myLocationEnabled = true
+        binding.mapView.myLocationEnabled = true
     }
 }

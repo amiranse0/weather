@@ -1,15 +1,27 @@
 package com.example.weather
 
+import android.Manifest
 import android.app.Dialog
+import android.content.Context
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.databinding.DialogNotificationCustomizationBinding
 import com.example.weather.receivers.AlarmNotificationReceiver
+import com.example.weather.ui.MainViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
@@ -33,15 +45,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var dialogBinding: DialogNotificationCustomizationBinding
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        initializingVariables()
+
+        getLatestLocation()
 
         setContentView(binding.root)
 
         setSupportActionBar(binding.myToolbar)
 
+    }
+
+    private fun initializingVariables() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        binding = ActivityMainBinding.inflate(layoutInflater)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -52,7 +75,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_go_to_map -> {
-                /*findNavController(R.id.fragment).navigate(R.id.action_mainFragment_to_dayDetailFragment)*/
+                findNavController(R.id.fragment).navigate(R.id.action_global_to_mapFragment)
                 true
             }
             R.id.action_notification -> {
@@ -86,15 +109,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getTime(): Long {
-        val hour:Int = dialogBinding.notificationTimePicker.hour
-        val minute:Int = dialogBinding.notificationTimePicker.minute
+        val hour: Int = dialogBinding.notificationTimePicker.hour
+        val minute: Int = dialogBinding.notificationTimePicker.minute
         val calendar = Calendar.getInstance()
-        val currentYear:Int = calendar.get(Calendar.YEAR)
-        val currentMonth:Int = calendar.get(Calendar.MONTH)
-        val currentDay:Int = calendar.get(Calendar.DATE)
+        val currentYear: Int = calendar.get(Calendar.YEAR)
+        val currentMonth: Int = calendar.get(Calendar.MONTH)
+        val currentDay: Int = calendar.get(Calendar.DATE)
         calendar.set(
             currentYear,
-            currentMonth ,
+            currentMonth,
             currentDay,
             hour,
             minute,
@@ -108,5 +131,67 @@ class MainActivity : AppCompatActivity() {
     private fun notificationService() {
 
 
+    }
+
+    private fun getLatestLocation() {
+
+        val requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { permissions ->
+                when {
+                    permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                        Toast.makeText(this, "precise permission granted", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                        Toast.makeText(this, "approximate permission granted", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    else -> {
+                        Toast.makeText(
+                            this,
+                            "please get permission to this app",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+            }
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+            return
+        } else {
+            val sharedPref: SharedPreferences =
+                this.getPreferences(Context.MODE_PRIVATE)
+
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    Log.d("LOCATION", location.toString())
+                    if (location != null) {
+                        val coordinates = "${location.latitude}, ${location.longitude}"
+                        with(sharedPref.edit()) {
+                            this.putString(
+                                getString(R.string.coordinates),
+                                coordinates
+                            )
+                            this.apply()
+                        }
+                    }
+                }
+        }
     }
 }

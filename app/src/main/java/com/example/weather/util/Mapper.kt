@@ -42,7 +42,7 @@ object Mapper {
         return remoteWeather.let {
             val day = it.remoteForecast.remoteForecastDays[numberDay].remoteDay
             LocalForecast(
-                date = it.remoteForecast.remoteForecastDays[numberDay].date,
+                date = mapRemoteDateToLocalTemplateDate(it.remoteForecast.remoteForecastDays[numberDay].date),
                 averageHumidity = day.averageHumidity,
                 averageTemperature = day.averageTemperature,
                 averageVisibility = day.averageVisibility,
