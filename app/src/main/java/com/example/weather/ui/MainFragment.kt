@@ -219,21 +219,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun putDataOnViews(data: Triple<WeatherAndCurrentWeather, List<WeatherWithForecasts>, List<ForecastWithHours>>) {
-        locationUi(data.first.localWeather)
-        generalVariablesUi(data.first.localCurrentWeather)
+        binding.localWeather = data.first.localWeather
+        binding.localCurrentWeather = data.first.localCurrentWeather
+        binding.todayWeather = data.second.first().localForecasts.first()
 
+        val todayHoursList:List<LocalHour> = data.third.first().localHours
+        hoursAdapter.submitList(todayHoursList)
     }
 
-    private fun generalVariablesUi(localCurrentWeather: LocalCurrentWeather) {
-        localCurrentWeather.apply {
-            binding.todayView.
-        }
-    }
-
-    private fun locationUi(localWeather: LocalWeather){
-        localWeather.apply {
-            binding.locationView.locationTv.text =
-                context?.getString(R.string.title_name_template, countryName, region, name)
-        }
-    }
 }

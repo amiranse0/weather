@@ -29,7 +29,7 @@ class MainHoursAdapter : ListAdapter<LocalHour, MainHoursAdapter.HourViewHolder>
 
     override fun onBindViewHolder(holder: HourViewHolder, position: Int) {
         val item = getItem(position)
-        holder.binding.hourTimeTv.text = item.timeDate
+        holder.binding.hourTimeTv.text = item.time
         holder.binding.tempHourTv.text = holder.context.getString(
             R.string.temperature_template,
             item.temperature
