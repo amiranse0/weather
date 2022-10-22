@@ -13,4 +13,6 @@
     <string name="weather">Weather</string>
     <string name="coordinates">coordinates</string>
     <string name="title_name_template">%s, %s, %s</string>
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
 </resources>

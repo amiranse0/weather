@@ -14,7 +14,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideUnsplashService(): WeatherService {
+    fun provideWeatherService(): WeatherService {
         return WeatherService.create()
     }
 }

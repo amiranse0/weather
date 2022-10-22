@@ -5,24 +5,31 @@ import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
-import androidx.navigation.findNavController
+import com.carto.styles.MarkerStyleBuilder
+import com.carto.utils.BitmapUtils
 import com.example.weather.databinding.ActivityMainBinding
+import com.example.weather.databinding.DialogMapBinding
 import com.example.weather.databinding.DialogNotificationCustomizationBinding
 import com.example.weather.receivers.AlarmNotificationReceiver
 import com.example.weather.ui.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import org.neshan.common.model.LatLng
+import org.neshan.mapsdk.model.Marker
 import java.util.Calendar
 
 @AndroidEntryPoint
@@ -44,10 +51,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var dialogBinding: DialogNotificationCustomizationBinding
+    private lateinit var mapDialogBinding: DialogMapBinding
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val viewModel: MainViewModel by viewModels()
+
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +75,7 @@ class MainActivity : AppCompatActivity() {
     private fun initializingVariables() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -75,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_go_to_map -> {
-                findNavController(R.id.fragment).navigate(R.id.action_global_to_mapFragment)
+                mapDialog()
                 true
             }
             R.id.action_notification -> {
@@ -133,6 +144,57 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun mapDialog() {
+        val mapDialog = Dialog(this, androidx.transition.R.style.Base_ThemeOverlay_AppCompat)
+        mapDialogBinding = DialogMapBinding.inflate(layoutInflater)
+        mapDialog.setContentView(mapDialogBinding.root)
+
+        mapDialogBinding.dismissButton.setOnClickListener {
+            mapDialog.dismiss()
+        }
+
+        setMapWithUserLocation(mapDialogBinding)
+
+        mapDialogBinding.userLocation.setOnClickListener {
+            setMapWithUserLocation(mapDialogBinding)
+        }
+
+        setMapWithUserSelectedLocation(mapDialogBinding)
+
+        mapDialogBinding.submitButton.setOnClickListener {
+            searchViaMap(mapDialogBinding)
+            mapDialog.dismiss()
+        }
+
+        mapDialog.show()
+
+    }
+
+    private fun setMapWithUserLocation(mapDialogBinding: DialogMapBinding){
+        val latLng =
+            sharedPref.getString(getString(R.string.coordinates), "35.7292287, 51.422784")
+        val lat = latLng?.split(", ")?.get(0)?.toDouble() ?: 35.7292287
+        val lng = latLng?.split(", ")?.get(1)?.toDouble() ?: 51.422784
+        mapDialogBinding.mapView.moveCamera(LatLng(lat, lng), 0f)
+    }
+
+    private fun setMapWithUserSelectedLocation(mapDialogBinding: DialogMapBinding){
+        mapDialogBinding.inputLngEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_GO) {
+                val lat = mapDialogBinding.inputLatEd.text.toString().toDouble()
+                val lng = mapDialogBinding.inputLngEd.text.toString().toDouble()
+                mapDialogBinding.mapView.moveCamera(LatLng(lat,lng), 0f)
+                return@OnEditorActionListener true
+            }
+            false
+        })
+    }
+
+    private fun searchViaMap(mapDialogBinding: DialogMapBinding){
+        val chooseLocation: LatLng = mapDialogBinding.mapView.cameraTargetPosition
+        viewModel.getData("${chooseLocation.latitude}, ${chooseLocation.longitude}")
+    }
+
     private fun getLatestLocation() {
 
         val requestPermissionLauncher =
@@ -175,8 +237,6 @@ class MainActivity : AppCompatActivity() {
             )
             return
         } else {
-            val sharedPref: SharedPreferences =
-                this.getPreferences(Context.MODE_PRIVATE)
 
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->

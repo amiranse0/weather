@@ -7,7 +7,6 @@ import javax.inject.Inject
 class RemoteDataSource @Inject constructor(
     private val service: WeatherService
 ) {
-
     suspend fun fetch(query: Map<String, String>): RemoteWeather =
         service.getWeather(query)
 }
