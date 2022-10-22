@@ -86,7 +86,7 @@
             app:layout_constraintRight_toRightOf="parent"/>
         <TextView
             android:id="@+id/error_tv"
-            android:text="something is wrong"
+            android:text="@string/something_is_wrong"
             android:textSize="20sp"
             android:gravity="center"
             android:layout_width="wrap_content"

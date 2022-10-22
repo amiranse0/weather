@@ -1,7 +1,6 @@
 package com.example.weather.ui
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.weather.MainApp
 import com.example.weather.data.domain.WeatherRepository
@@ -12,7 +11,6 @@ import com.example.weather.data.model.local.WeatherWithForecasts
 import com.example.weather.util.ResultOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,17 +25,17 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
     )
 
     private val _weatherAndCurrentWeatherStateFlow: MutableStateFlow<ResultOf<WeatherAndCurrentWeather>> =
-        MutableStateFlow(ResultOf.Loading)
+        MutableStateFlow(ResultOf.LoadingEmptyLocal)
     val weatherAndCurrentWeatherStateFlow = _weatherAndCurrentWeatherStateFlow
     private val _weatherWithForecastsStateFlow: MutableStateFlow<ResultOf<List<WeatherWithForecasts>>> =
-        MutableStateFlow(ResultOf.Loading)
+        MutableStateFlow(ResultOf.LoadingEmptyLocal)
     val weatherWithForecastsStateFlow = _weatherWithForecastsStateFlow
     private val _forecastWithHoursStateFlow: MutableStateFlow<ResultOf<List<ForecastWithHours>>> =
-        MutableStateFlow(ResultOf.Loading)
+        MutableStateFlow(ResultOf.LoadingEmptyLocal)
     private val forecastWithHoursStateFlow = _forecastWithHoursStateFlow
 
     private val _dataStateFlow: MutableStateFlow<ResultOf<Triple<WeatherAndCurrentWeather, List<WeatherWithForecasts>, List<ForecastWithHours>>>> =
-        MutableStateFlow(ResultOf.Loading)
+        MutableStateFlow(ResultOf.LoadingEmptyLocal)
     val dataStatFlow = _dataStateFlow
 
     fun getData(query: String) {

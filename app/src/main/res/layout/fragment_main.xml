@@ -38,11 +38,9 @@
                 android:id="@+id/name_query_ed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_size"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
-                android:background="@android:color/transparent"
-                android:padding="@dimen/padding_size" />
+                android:background="@android:color/transparent" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

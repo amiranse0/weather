@@ -10,9 +10,6 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,7 +24,6 @@ import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.util.ResultOf
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.neshan.common.model.LatLng
 
 
 @AndroidEntryPoint
@@ -45,28 +41,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
 
         initializingVariables(view)
-
-
-        val appBar: Toolbar? = (activity as? AppCompatActivity)?.findViewById(R.id.my_toolbar)
-        Log.d("MENU", appBar.toString())
-        (activity as? AppCompatActivity)?.setSupportActionBar(appBar);
-        val actionBar: ActionBar? = (activity as? AppCompatActivity)?.supportActionBar
-
-        appBar?.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_notification -> {
-                    Toast.makeText(context, "notif", Toast.LENGTH_LONG).show()
-                    true
-                }
-                R.id.action_go_to_map -> {
-                    Toast.makeText(context, "map", Toast.LENGTH_LONG).show()
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
-        }
 
         primaryRequest()
 
@@ -101,12 +75,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val errorLayout = activity?.findViewById<ConstraintLayout>(R.id.error_view)
         val resultView = activity?.findViewById<ScrollView>(R.id.result_view)
         when (state) {
-            is ResultOf.Error -> {
+            is ResultOf.ErrorEmptyLocal -> {
                 errorLayout?.visibility = View.VISIBLE
                 progressBar?.visibility = View.INVISIBLE
                 resultView?.visibility = View.INVISIBLE
             }
-            is ResultOf.Loading -> {
+            is ResultOf.LoadingEmptyLocal -> {
                 errorLayout?.visibility = View.INVISIBLE
                 progressBar?.visibility = View.VISIBLE
                 resultView?.visibility = View.INVISIBLE
@@ -115,6 +89,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 errorLayout?.visibility = View.INVISIBLE
                 progressBar?.visibility = View.INVISIBLE
                 resultView?.visibility = View.VISIBLE
+            }
+            is ResultOf.LoadingFillLocal -> {
+                errorLayout?.visibility = View.INVISIBLE
+                progressBar?.visibility = View.VISIBLE
+                resultView?.visibility = View.VISIBLE
+            }
+            is ResultOf.ErrorFIllLocal -> {
+                errorLayout?.visibility = View.INVISIBLE
+                progressBar?.visibility = View.INVISIBLE
+                resultView?.visibility = View.VISIBLE
+                Toast.makeText(requireContext(), getString(R.string.something_is_wrong), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -125,17 +110,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 viewModel.dataStatFlow.collect {
                     handleUiState(it)
                     when (it) {
-                        is ResultOf.Loading -> {
-                            Log.d("TAG", "Loading")
+                        is ResultOf.LoadingEmptyLocal -> {
+                            Log.d("TAG", "Loading empty")
                         }
-                        is ResultOf.Error -> {
-                            Log.d("TAG", "Error")
+                        is ResultOf.ErrorEmptyLocal -> {
+                            Log.d("TAG", "Error empty")
                         }
                         is ResultOf.Success -> {
-
                             putDataOnViews(it.data)
                             Log.d("TAG", "Success")
                         }
+                        is ResultOf.LoadingFillLocal -> Log.d("TAG", "Loading fill")
+                        is ResultOf.ErrorFIllLocal -> Log.d("TAG", "Error fill")
                     }
                 }
             }

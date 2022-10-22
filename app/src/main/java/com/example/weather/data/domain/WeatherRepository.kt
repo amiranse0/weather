@@ -10,9 +10,10 @@ class WeatherRepository @Inject constructor(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource
 ) {
-    companion object{
-        val TIME_STEP = TimeUnit.MINUTES.toMillis(3)
+    companion object {
+        val TIME_STEP = TimeUnit.MINUTES.toMillis(5)
     }
+
     suspend fun fetch(query: Map<String, String>) = remoteDataSource.fetch(query)
 
     suspend fun saveDataToLocal(data: RemoteWeather) {
@@ -23,44 +24,43 @@ class WeatherRepository @Inject constructor(
 
     fun getData(query: Map<String, String>) = flow {
         while (true){
-            try {
-                if (localDataSource.isDataExistInLocal()){
-                    val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()
-                    val weatherWithForecasts = localDataSource.getWeatherWithForecasts()
-                    val forecastsWithHours = localDataSource.getForecastWithHours()
-                    emit(
-                        ResultOf.Success(
-                            Triple(
-                                weatherAndCurrentWeather,
-                                weatherWithForecasts,
-                                forecastsWithHours
-                            )
+            emit(ResultOf.LoadingEmptyLocal)
+            if (localDataSource.isDataExistInLocal()){
+                val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()
+                val weatherWithForecasts = localDataSource.getWeatherWithForecasts()
+                val forecastsWithHours = localDataSource.getForecastWithHours()
+
+                emit(
+                    ResultOf.Success(
+                        Triple(
+                            weatherAndCurrentWeather,
+                            weatherWithForecasts,
+                            forecastsWithHours
                         )
                     )
-                } else{
-                    /*emit(ResultOf.Loading)*/
-                }
+                )
+                emit(ResultOf.LoadingFillLocal)
+            }
+            try {
                 val data = fetch(query)
                 saveDataToLocal(data)
-            } catch (_: Exception) {
 
-            } finally {
-                if (localDataSource.isDataExistInLocal()){
-                    val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()
-                    val weatherWithForecasts = localDataSource.getWeatherWithForecasts()
-                    val forecastsWithHours = localDataSource.getForecastWithHours()
-                    emit(
-                        ResultOf.Success(
-                            Triple(
-                                weatherAndCurrentWeather,
-                                weatherWithForecasts,
-                                forecastsWithHours
-                            )
+                val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()
+                val weatherWithForecasts = localDataSource.getWeatherWithForecasts()
+                val forecastsWithHours = localDataSource.getForecastWithHours()
+
+                emit(
+                    ResultOf.Success(
+                        Triple(
+                            weatherAndCurrentWeather,
+                            weatherWithForecasts,
+                            forecastsWithHours
                         )
                     )
-                } else{
-                    emit(ResultOf.Error(Exception("No data in local")))
-                }
+                )
+            }catch (e:Exception){
+                if (localDataSource.isDataExistInLocal()) emit(ResultOf.ErrorFIllLocal(e))
+                else emit(ResultOf.ErrorEmptyLocal(e))
             }
             kotlinx.coroutines.delay(TIME_STEP)
         }

@@ -15,4 +15,5 @@
     <string name="title_name_template">%s, %s, %s</string>
     <string name="latitude">latitude</string>
     <string name="longitude">longitude</string>
+    <string name="something_is_wrong">something is wrong</string>
 </resources>
