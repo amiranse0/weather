@@ -3,42 +3,94 @@ package com.example.weather.workers
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.weather.R
 import com.example.weather.data.domain.WeatherRepository
-import javax.inject.Inject
+import com.example.weather.data.domain.remote.api.ApiConfigurations
+import com.example.weather.data.model.remote.Alert
+import com.example.weather.util.ResultOf
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
-class NotificationWorker @Inject constructor(
-    private val context: Context,
-    private val workerParameters: WorkerParameters
-): CoroutineWorker(context, workerParameters) {
+@HiltWorker
+class NotificationWorker @AssistedInject constructor(
+    @Assisted private val context: Context,
+    @Assisted private val workerParameters: WorkerParameters,
+    private val repository: WeatherRepository
+) : CoroutineWorker(context, workerParameters) {
 
-    companion object{
+    companion object {
         const val CHANNEL_ID = "1"
         const val TAG = "DISASTER"
         const val NOTIFICATION_ID = 1
     }
 
     override suspend fun doWork(): Result {
-        notification()
-        channelNotification()
+        return coroutineScope {
+            val coordinate: String = getCoordinates()
+            val queryMap = mutableMapOf(
+                "key" to ApiConfigurations.API_KEY,
+                "days" to "7",
+                "aqi" to "no",
+                "alerts" to "yes",
+                "q" to coordinate
+            )
 
-        Log.d("ALARM", "Worker")
+            var result = Result.retry()
 
-        return Result.success()
+            val job = launch(Dispatchers.IO) {
+                repository.getDisasters(queryMap).collect{
+                    result = when(it) {
+                        is ResultOf.Success -> {
+                            notification(it.data.first())
+                            channelNotification()
+                            Log.d("ALERT", "Success")
+                            Result.success()
+                        }
+                        is ResultOf.LoadingEmptyLocal -> {
+                            Log.d("ALERT", "Retry")
+                            Result.retry()
+                        }
+                        else -> {
+                            Log.d("ALERT", "Failed")
+                            Result.failure()
+                        }
+                    }
+                }
+            }
+
+            Log.d("ALARM", "Worker before")
+            job.wait()
+            Log.d("ALARM", "Worker")
+            result
+        }
+
     }
 
-    private fun notification(){
+    private fun getCoordinates(): String {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences(context.getString(R.string.coordinates), Context.MODE_PRIVATE)
+
+        return sharedPreferences.getString(context.getString(R.string.coordinates), "Tehran")
+                ?: "Toronto"
+    }
+
+    private fun notification(alert: Alert) {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_baseline_cloud_queue_24)
-            .setContentTitle(context.getString(R.string.weather))
-            .setContentText("Something")
+            .setContentTitle(alert.event)
+            .setContentText(alert.description)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         with(NotificationManagerCompat.from(context)) {
@@ -56,10 +108,10 @@ class NotificationWorker @Inject constructor(
                     description = descriptionText
                 }
 
-//            val notificationManager: NotificationManager =
-//                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//
-//            notificationManager.createNotificationChannel(channel)
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

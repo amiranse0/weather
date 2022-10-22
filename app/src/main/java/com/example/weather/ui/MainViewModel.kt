@@ -10,6 +10,7 @@ import com.example.weather.data.model.local.WeatherAndCurrentWeather
 import com.example.weather.data.model.local.WeatherWithForecasts
 import com.example.weather.util.ResultOf
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,44 +39,17 @@ class MainViewModel @Inject constructor(private val weatherRepository: WeatherRe
         MutableStateFlow(ResultOf.LoadingEmptyLocal)
     val dataStatFlow = _dataStateFlow
 
+    private var job: Job? = null
+
     fun getData(query: String) {
         val scopeQueryMap = queryMap
         scopeQueryMap["q"] = query
-        viewModelScope.launch {
+        job?.cancel()
+        job = viewModelScope.launch {
             weatherRepository.getData(scopeQueryMap).collect {
                 _dataStateFlow.emit(it)
             }
         }
     }
-
-    private suspend fun oldDataAndError(isDataExistInLocal: Boolean, errorMessage: String) {
-        if (isDataExistInLocal) {
-            /*TODO("toast that something is wrong and show old data")*/
-        } else {
-            /*TODO("Show the error")*/
-        }
-    }
-
-    fun mainFunction(query: Map<String, String>) {
-        viewModelScope.launch {
-            val isDataExistInLocal = weatherRepository.isDataExistInLocal()
-            MainApp.isConnected().collect {
-                if (it) {
-                    try {
-                        val data = weatherRepository.fetch(query)
-                        weatherRepository.saveDataToLocal(data)
-
-
-                    } catch (e: Exception) {
-                        oldDataAndError(isDataExistInLocal, e.message.toString())
-                    }
-                } else {
-                    oldDataAndError(isDataExistInLocal, "")
-                    TODO("Toast that no internet connection")
-                }
-            }
-        }
-    }
-
 
 }

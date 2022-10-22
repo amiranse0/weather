@@ -14,18 +14,16 @@ class WeatherRepository @Inject constructor(
         val TIME_STEP = TimeUnit.MINUTES.toMillis(5)
     }
 
-    suspend fun fetch(query: Map<String, String>) = remoteDataSource.fetch(query)
+    private suspend fun fetch(query: Map<String, String>) = remoteDataSource.fetch(query)
 
-    suspend fun saveDataToLocal(data: RemoteWeather) {
+    private suspend fun saveDataToLocal(data: RemoteWeather) {
         localDataSource.updateLocal(data)
     }
 
-    suspend fun isDataExistInLocal() = localDataSource.isDataExistInLocal()
-
     fun getData(query: Map<String, String>) = flow {
-        while (true){
+        while (true) {
             emit(ResultOf.LoadingEmptyLocal)
-            if (localDataSource.isDataExistInLocal()){
+            if (localDataSource.isDataExistInLocal()) {
                 val weatherAndCurrentWeather = localDataSource.getWeatherAndCurrentWeather()
                 val weatherWithForecasts = localDataSource.getWeatherWithForecasts()
                 val forecastsWithHours = localDataSource.getForecastWithHours()
@@ -58,7 +56,7 @@ class WeatherRepository @Inject constructor(
                         )
                     )
                 )
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 if (localDataSource.isDataExistInLocal()) emit(ResultOf.ErrorFIllLocal(e))
                 else emit(ResultOf.ErrorEmptyLocal(e))
             }
@@ -66,4 +64,13 @@ class WeatherRepository @Inject constructor(
         }
     }
 
+    fun getDisasters(query: Map<String, String>) = flow {
+        emit(ResultOf.LoadingEmptyLocal)
+        try {
+            val disasters = remoteDataSource.getDisasters(query)
+            emit(ResultOf.Success(disasters))
+        } catch (e:Exception){
+            emit(ResultOf.ErrorEmptyLocal(e))
+        }
+    }
 }

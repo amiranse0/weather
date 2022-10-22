@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
@@ -50,9 +51,20 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun searchWeather() {
-        binding.nameQueryEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+        binding.nameQueryEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 viewModel.getData(binding.nameQueryEd.text.toString())
+
+                val manager = requireActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE
+                ) as InputMethodManager?
+                if (manager != null) {
+                    manager
+                        .hideSoftInputFromWindow(
+                            v?.windowToken, 0
+                        )
+                }
+
                 return@OnEditorActionListener true
             }
             false
@@ -61,7 +73,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun primaryRequest(){
         val sharedPref: SharedPreferences =
-            requireActivity().getPreferences(Context.MODE_PRIVATE)
+            requireActivity().getSharedPreferences(getString(R.string.coordinates), Context.MODE_PRIVATE)
 
         val coordinates =
             sharedPref.getString(getString(R.string.coordinates), "Tehran")
