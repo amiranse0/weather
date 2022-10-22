@@ -6,4 +6,10 @@
     <dimen name="padding_size">3dp</dimen>
     <dimen name="margin_size">5dp</dimen>
     <dimen name="header2">28sp</dimen>
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="widget_margin">0dp</dimen>
 </resources>

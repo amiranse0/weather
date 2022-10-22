@@ -39,6 +39,7 @@ class MainDaysAdapter : ListAdapter<LocalForecast, MainDaysAdapter.DayViewHolder
             holder.context.getString(R.string.chance_probability_template, item.dailyChanceOfRain)
         holder.binding.snowProbabilityTv.text =
             holder.context.getString(R.string.chance_probability_template, item.dailyChanceOfSnow)
+
         Glide
             .with(holder.context)
             .load(item.conditionIcon)
