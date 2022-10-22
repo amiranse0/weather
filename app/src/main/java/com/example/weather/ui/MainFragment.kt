@@ -5,8 +5,10 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
 import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.ActionBar
@@ -25,6 +27,7 @@ import com.example.weather.databinding.FragmentMainBinding
 import com.example.weather.util.ResultOf
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.neshan.common.model.LatLng
 
 
 @AndroidEntryPoint
@@ -67,7 +70,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         primaryRequest()
 
-        weatherAndCurrentWeather()
+        getWeathers()
+
+        searchWeather()
+    }
+
+    private fun searchWeather() {
+        binding.nameQueryEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.getData(binding.nameQueryEd.text.toString())
+                return@OnEditorActionListener true
+            }
+            false
+        })
     }
 
     private fun primaryRequest(){
@@ -104,7 +119,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
-    private fun weatherAndCurrentWeather() {
+    private fun getWeathers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dataStatFlow.collect {
