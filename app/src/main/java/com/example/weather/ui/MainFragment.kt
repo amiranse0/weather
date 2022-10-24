@@ -11,6 +11,8 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,9 +24,12 @@ import com.example.weather.adapters.MainDaysAdapter
 import com.example.weather.adapters.MainHoursAdapter
 import com.example.weather.data.model.local.*
 import com.example.weather.databinding.FragmentMainBinding
+import com.example.weather.databinding.MapLayoutBinding
 import com.example.weather.util.ResultOf
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.neshan.common.model.LatLng
+import org.neshan.mapsdk.MapView
 
 
 @AndroidEntryPoint
@@ -38,6 +43,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val daysAdapter = MainDaysAdapter()
 
+    private lateinit var sharedPref: SharedPreferences
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -48,12 +55,61 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         getWeathers()
 
         searchWeather()
+
+        searchViaMap()
+
+    }
+
+    private fun searchViaMap() {
+        setMapWithUserLocation()
+
+        //binding.mapIncluded.mapView.mapStyle
+
+        binding.mapIncluded.userLocation.setOnClickListener {
+            setMapWithUserLocation()
+        }
+
+        setMapWithUserSelectedLocation()
+
+        binding.mapIncluded.submitButton.setOnClickListener {
+            val chooseLocation: LatLng = binding.mapIncluded.mapView.cameraTargetPosition
+            viewModel.getData("${chooseLocation.latitude}, ${chooseLocation.longitude}")
+        }
+    }
+
+    private fun setMapWithUserLocation(){
+        val latLng =
+            sharedPref.getString(getString(R.string.coordinates), "35.7292287, 51.422784")
+        val lat = latLng?.split(", ")?.get(0)?.toDouble() ?: 35.7292287
+        val lng = latLng?.split(", ")?.get(1)?.toDouble() ?: 51.422784
+        binding.mapIncluded.mapView.moveCamera(LatLng(lat, lng), 0f)
+    }
+
+    private fun setMapWithUserSelectedLocation(){
+        binding.mapIncluded.inputLngEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_GO) {
+                val lat = v.text.toString().toDouble()
+                val lng = v.text.toString().toDouble()
+                binding.mapIncluded.mapView.moveCamera(LatLng(lat,lng), 0f)
+
+                val manager = context?.getSystemService(
+                    AppCompatActivity.INPUT_METHOD_SERVICE
+                ) as InputMethodManager
+                manager
+                    .hideSoftInputFromWindow(
+                        v.windowToken, 0
+                    )
+
+                return@OnEditorActionListener true
+            }
+            false
+        })
     }
 
     private fun searchWeather() {
-        binding.nameQueryEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, _ ->
+        binding.searchLayout.nameQueryEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.getData(binding.nameQueryEd.text.toString())
+                viewModel.getData(v.text.toString())
 
                 val manager = requireActivity().getSystemService(
                     Context.INPUT_METHOD_SERVICE
@@ -72,9 +128,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun primaryRequest(){
-        val sharedPref: SharedPreferences =
-            requireActivity().getSharedPreferences(getString(R.string.coordinates), Context.MODE_PRIVATE)
-
         val coordinates =
             sharedPref.getString(getString(R.string.coordinates), "Tehran")
                 ?: "Toronto"
@@ -144,6 +197,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding = FragmentMainBinding.bind(view)
         binding.hoursList.adapter = hoursAdapter
         binding.daysList.adapter = daysAdapter
+        sharedPref = requireActivity().getSharedPreferences(getString(R.string.coordinates), Context.MODE_PRIVATE)
     }
 
     private fun putDataOnViews(data: Triple<WeatherAndCurrentWeather, List<WeatherWithForecasts>, List<ForecastWithHours>>) {

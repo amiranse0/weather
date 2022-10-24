@@ -10,16 +10,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.weather.databinding.ActivityMainBinding
-import com.example.weather.databinding.DialogMapBinding
+import com.example.weather.databinding.MapLayoutBinding
 import com.example.weather.databinding.DialogNotificationCustomizationBinding
 import com.example.weather.receivers.AlarmNotificationReceiver
 import com.example.weather.ui.MainViewModel
@@ -48,11 +45,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var dialogBinding: DialogNotificationCustomizationBinding
-    private lateinit var mapDialogBinding: DialogMapBinding
+    private lateinit var mapDialogBinding: MapLayoutBinding
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-    private val viewModel: MainViewModel by viewModels()
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -82,10 +77,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_go_to_map -> {
-                mapDialog()
-                true
-            }
             R.id.action_notification -> {
                 setNotifications()
                 true
@@ -139,66 +130,6 @@ class MainActivity : AppCompatActivity() {
     private fun notificationService() {
 
 
-    }
-
-    private fun mapDialog() {
-        val mapDialog = Dialog(this, androidx.transition.R.style.Base_ThemeOverlay_AppCompat)
-        mapDialogBinding = DialogMapBinding.inflate(layoutInflater)
-        mapDialog.setContentView(mapDialogBinding.root)
-
-        mapDialogBinding.dismissButton.setOnClickListener {
-            mapDialog.dismiss()
-        }
-
-        setMapWithUserLocation(mapDialogBinding)
-
-        mapDialogBinding.userLocation.setOnClickListener {
-            setMapWithUserLocation(mapDialogBinding)
-        }
-
-        setMapWithUserSelectedLocation(mapDialogBinding)
-
-        mapDialogBinding.submitButton.setOnClickListener {
-            searchViaMap(mapDialogBinding)
-            mapDialog.dismiss()
-        }
-
-        mapDialog.show()
-
-    }
-
-    private fun setMapWithUserLocation(mapDialogBinding: DialogMapBinding){
-        val latLng =
-            sharedPref.getString(getString(R.string.coordinates), "35.7292287, 51.422784")
-        val lat = latLng?.split(", ")?.get(0)?.toDouble() ?: 35.7292287
-        val lng = latLng?.split(", ")?.get(1)?.toDouble() ?: 51.422784
-        mapDialogBinding.mapView.moveCamera(LatLng(lat, lng), 0f)
-    }
-
-    private fun setMapWithUserSelectedLocation(mapDialogBinding: DialogMapBinding){
-        mapDialogBinding.inputLngEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {
-                val lat = mapDialogBinding.inputLatEd.text.toString().toDouble()
-                val lng = mapDialogBinding.inputLngEd.text.toString().toDouble()
-                mapDialogBinding.mapView.moveCamera(LatLng(lat,lng), 0f)
-
-                val manager = getSystemService(
-                    INPUT_METHOD_SERVICE
-                ) as InputMethodManager
-                manager
-                    .hideSoftInputFromWindow(
-                        v.windowToken, 0
-                    )
-
-                return@OnEditorActionListener true
-            }
-            false
-        })
-    }
-
-    private fun searchViaMap(mapDialogBinding: DialogMapBinding){
-        val chooseLocation: LatLng = mapDialogBinding.mapView.cameraTargetPosition
-        viewModel.getData("${chooseLocation.latitude}, ${chooseLocation.longitude}")
     }
 
     private fun getLatestLocation() {

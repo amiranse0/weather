@@ -8,10 +8,4 @@
         android:title="@string/notification"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/action_go_to_map"
-        android:title="@string/map"
-        android:icon="@drawable/ic_baseline_map"
-        app:showAsAction="always"/>
-
-
 </menu>
