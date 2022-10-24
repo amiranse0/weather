@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit
 class AlarmNotificationReceiver : BroadcastReceiver() {
     companion object {
         const val REQUEST_CODE = 1
+        const val NOTIFICATION_WORKER_ID = "ID1"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -30,8 +31,8 @@ class AlarmNotificationReceiver : BroadcastReceiver() {
 
         val notificationWorker = WorkManager.getInstance(context!!)
         notificationWorker.enqueueUniquePeriodicWork(
-            MainActivity.NOTIFICATION_WORKER_ID,
-            ExistingPeriodicWorkPolicy.KEEP,
+            NOTIFICATION_WORKER_ID,
+            ExistingPeriodicWorkPolicy.REPLACE,
             notificationRequest
         )
 

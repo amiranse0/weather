@@ -14,14 +14,18 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.work.*
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.databinding.MapLayoutBinding
 import com.example.weather.databinding.DialogNotificationCustomizationBinding
 import com.example.weather.receivers.AlarmNotificationReceiver
+import com.example.weather.workers.BackgroundRequestWorker
+import com.example.weather.workers.NotificationWorker
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -59,6 +63,28 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.myToolbar)
 
+        backgroundUpdatingLocal()
+
+    }
+
+    private fun backgroundUpdatingLocal() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val updateLocalRequest = PeriodicWorkRequest.Builder(
+            BackgroundRequestWorker::class.java,
+            3,
+            TimeUnit.HOURS
+        ).setConstraints(constraints)
+            .build()
+
+        val updateLocalWorker = WorkManager.getInstance(this)
+        updateLocalWorker.enqueueUniquePeriodicWork(
+            NOTIFICATION_WORKER_ID,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            updateLocalRequest
+        )
     }
 
     private fun initializingVariables() {

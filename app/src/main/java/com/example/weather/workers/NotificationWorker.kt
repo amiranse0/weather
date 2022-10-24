@@ -17,6 +17,7 @@ import com.example.weather.data.domain.remote.api.ApiConfigurations
 import com.example.weather.data.model.remote.Alert
 import com.example.weather.data.model.remote.Alerts
 import com.example.weather.util.ResultOf
+import com.example.weather.util.getCoordinate
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -38,27 +39,26 @@ class NotificationWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return coroutineScope {
-            val coordinate: String = getCoordinates()
             val queryMap = mutableMapOf(
                 "key" to ApiConfigurations.API_KEY,
                 "days" to "7",
                 "aqi" to "no",
                 "alerts" to "yes",
-                "q" to coordinate
+                "q" to getCoordinate(context)
             )
 
             var result = Result.retry()
 
             val job = launch(Dispatchers.IO) {
-                repository.getDisasters(queryMap).collect{
-                    result = when(it) {
+                repository.getDisasters(queryMap).collect {
+                    result = when (it) {
                         is ResultOf.Success -> {
                             notification(it.data)
                             channelNotification()
                             Log.d("ALARM", "Success")
                             Result.success()
                         }
-                        is ResultOf.LoadingEmptyLocal -> {
+                        is ResultOf.LoadingEmptyLocal, ResultOf.LoadingFillLocal -> {
                             Log.d("ALARM", "Retry")
                             Result.retry()
                         }
@@ -71,21 +71,9 @@ class NotificationWorker @AssistedInject constructor(
             }
 
             job.start()
-
-            Log.d("ALARM", "Worker before")
-            //job.wait()
-            Log.d("ALARM", "Worker")
             result
         }
 
-    }
-
-    private fun getCoordinates(): String {
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences(context.getString(R.string.coordinates), Context.MODE_PRIVATE)
-
-        return sharedPreferences.getString(context.getString(R.string.coordinates), "Tehran")
-                ?: "Toronto"
     }
 
     private fun notification(alerts: List<Alert>) {
