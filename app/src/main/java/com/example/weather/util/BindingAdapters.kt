@@ -3,7 +3,6 @@ package com.example.weather.util
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import coil.load
-import com.bumptech.glide.Glide
 import com.example.weather.R
 
 @BindingAdapter("imageUrl", requireAll = false)

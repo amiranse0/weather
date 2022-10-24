@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/territory_name_tv"
         android:layout_alignParentStart="true"
+        android:textColor="@color/black"
         android:textSize="@dimen/normal_text_size" />
 
     <TextView
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:textColor="@color/black"
         android:textSize="@dimen/header2" />
 
     <ImageView
@@ -30,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_baseline_search_24" />
+        android:src="@drawable/ic_baseline_cloud_queue_24" />
 
     <TextView
         android:id="@+id/territory_name_tv"
@@ -38,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/condition_icon_widget"
         android:layout_alignParentStart="true"
+        android:textColor="@color/black"
         android:textSize="@dimen/headers_text_size" />
 
 </RelativeLayout>
