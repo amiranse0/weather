@@ -3,6 +3,7 @@ package com.example.weather.data.domain
 import android.util.Log
 import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.util.ResultOf
+import com.example.weather.util.WidgetContent
 import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -76,4 +77,6 @@ class WeatherRepository @Inject constructor(
             Log.d("ALARM", e.message.toString())
         }
     }
+
+    suspend fun getDataForWidget(): WidgetContent? = localDataSource.getWidgetContent()
 }

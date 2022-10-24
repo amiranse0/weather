@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import com.example.weather.data.domain.local.AppDatabase
 import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.util.Mapper
+import com.example.weather.util.WidgetContent
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
@@ -22,7 +23,19 @@ class LocalDataSource @Inject constructor(
 
     suspend fun isDataExistInLocal() = weatherDao.getNumberOfRecordsOfWeather() != 0
 
-    suspend fun updateLocal(remoteWeather: RemoteWeather){
+    suspend fun getWidgetContent(): WidgetContent? {
+        val data = weatherDao.getWeatherAndCurrentWeatherForWidget()
+        return if (data.size == 1)
+            WidgetContent(
+                territoryName = data.first().localWeather.region,
+                icon = data.first().localCurrentWeather.conditionIcon,
+                date = "${data.first().localCurrentWeather.lastUpdatedDate} ${data.first().localCurrentWeather.lastUpdatedTime}",
+                temperature = data.first().localCurrentWeather.temperature
+            )
+        else null
+    }
+
+    suspend fun updateLocal(remoteWeather: RemoteWeather) {
         database.withTransaction {
             weatherDao.deleteWeatherTable()
             currentWeatherDao.deleteCurrentWeatherTable()

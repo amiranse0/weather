@@ -21,6 +21,10 @@ interface WeatherDao {
 
     @Transaction
     @Query("SELECT * FROM weather")
+    suspend fun getWeatherAndCurrentWeatherForWidget(): List<WeatherAndCurrentWeather>
+
+    @Transaction
+    @Query("SELECT * FROM weather")
     suspend fun getWeatherWithForecasts(): List<WeatherWithForecasts>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
