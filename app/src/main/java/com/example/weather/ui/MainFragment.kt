@@ -12,7 +12,6 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -24,12 +23,10 @@ import com.example.weather.adapters.MainDaysAdapter
 import com.example.weather.adapters.MainHoursAdapter
 import com.example.weather.data.model.local.*
 import com.example.weather.databinding.FragmentMainBinding
-import com.example.weather.databinding.MapLayoutBinding
 import com.example.weather.util.ResultOf
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.neshan.common.model.LatLng
-import org.neshan.mapsdk.MapView
 
 
 @AndroidEntryPoint
@@ -58,6 +55,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         searchViaMap()
 
+        refresh()
+
+    }
+
+    private fun refresh() {
+        binding.refreshButton.setOnClickListener {
+            primaryRequest()
+        }
     }
 
     private fun searchViaMap() {
