@@ -74,7 +74,10 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:background="@drawable/glass_background"
+            android:imeOptions="actionNext"
+            android:inputType="text"
             android:hint="@string/latitude" />
+
 
     </com.google.android.material.textfield.TextInputLayout>
 

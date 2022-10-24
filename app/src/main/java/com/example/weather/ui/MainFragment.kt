@@ -91,6 +91,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun setMapWithUserSelectedLocation(){
+
         binding.mapIncluded.inputLngEd.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 val lat = v.text.toString().toDouble()

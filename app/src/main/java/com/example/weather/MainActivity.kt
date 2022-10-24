@@ -12,18 +12,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.weather.databinding.ActivityMainBinding
 import com.example.weather.databinding.MapLayoutBinding
 import com.example.weather.databinding.DialogNotificationCustomizationBinding
 import com.example.weather.receivers.AlarmNotificationReceiver
-import com.example.weather.ui.MainViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
-import org.neshan.common.model.LatLng
 import java.util.*
 
 @AndroidEntryPoint
@@ -103,8 +100,6 @@ class MainActivity : AppCompatActivity() {
             notificationCustomizationDialog.dismiss()
         }
         notificationCustomizationDialog.show()
-
-        notificationService()
     }
 
     private fun getTime(): Long {
@@ -125,11 +120,6 @@ class MainActivity : AppCompatActivity() {
         Log.d("ALARM", "${calendar.time}")
 
         return calendar.timeInMillis
-    }
-
-    private fun notificationService() {
-
-
     }
 
     private fun getLatestLocation() {

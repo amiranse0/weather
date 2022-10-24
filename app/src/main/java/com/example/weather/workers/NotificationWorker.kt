@@ -15,13 +15,13 @@ import com.example.weather.R
 import com.example.weather.data.domain.WeatherRepository
 import com.example.weather.data.domain.remote.api.ApiConfigurations
 import com.example.weather.data.model.remote.Alert
+import com.example.weather.data.model.remote.Alerts
 import com.example.weather.util.ResultOf
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 
 @HiltWorker
 class NotificationWorker @AssistedInject constructor(
@@ -53,25 +53,27 @@ class NotificationWorker @AssistedInject constructor(
                 repository.getDisasters(queryMap).collect{
                     result = when(it) {
                         is ResultOf.Success -> {
-                            notification(it.data.first())
+                            notification(it.data)
                             channelNotification()
-                            Log.d("ALERT", "Success")
+                            Log.d("ALARM", "Success")
                             Result.success()
                         }
                         is ResultOf.LoadingEmptyLocal -> {
-                            Log.d("ALERT", "Retry")
+                            Log.d("ALARM", "Retry")
                             Result.retry()
                         }
                         else -> {
-                            Log.d("ALERT", "Failed")
+                            Log.d("ALARM", "Failed")
                             Result.failure()
                         }
                     }
                 }
             }
 
+            job.start()
+
             Log.d("ALARM", "Worker before")
-            job.wait()
+            //job.wait()
             Log.d("ALARM", "Worker")
             result
         }
@@ -86,12 +88,19 @@ class NotificationWorker @AssistedInject constructor(
                 ?: "Toronto"
     }
 
-    private fun notification(alert: Alert) {
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_baseline_cloud_queue_24)
-            .setContentTitle(alert.event)
-            .setContentText(alert.description)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+    private fun notification(alerts: List<Alert>) {
+        val builder = NotificationCompat
+            .Builder(context, CHANNEL_ID).apply {
+                setSmallIcon(R.drawable.ic_baseline_cloud_queue_24)
+                if (alerts.isEmpty()){
+                    setContentTitle("disasters")
+                    setContentText("there is no disaster for your territory")
+                } else{
+                    setContentTitle(alerts.first().event)
+                    setContentText(alerts.first().description)
+                }
+                priority = NotificationCompat.PRIORITY_DEFAULT
+            }
 
         with(NotificationManagerCompat.from(context)) {
             notify(NOTIFICATION_ID, builder.build())

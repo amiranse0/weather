@@ -11,5 +11,5 @@ data class RemoteWeather(
     @SN("location")
     val location: Location,
     @SN("alerts")
-    val alerts: List<Alert>
+    val alerts: Alerts
 )

@@ -23,8 +23,8 @@ class AlarmNotificationReceiver : BroadcastReceiver() {
 
         val notificationRequest = PeriodicWorkRequest.Builder(
             NotificationWorker::class.java,
-            15,
-            TimeUnit.MINUTES
+            1,
+            TimeUnit.DAYS
         ).setConstraints(constraints)
             .build()
 
@@ -53,12 +53,5 @@ class AlarmNotificationReceiver : BroadcastReceiver() {
             pendingIntent
         )
         Log.d("ALARM", "SET")
-    }
-
-    fun cancelAlarm(context: Context) {
-        val intent = Intent(context, AlarmNotificationReceiver::class.java)
-        val sender = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, 0)
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.cancel(sender)
     }
 }

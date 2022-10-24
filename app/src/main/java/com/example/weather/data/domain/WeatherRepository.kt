@@ -1,5 +1,6 @@
 package com.example.weather.data.domain
 
+import android.util.Log
 import com.example.weather.data.model.remote.RemoteWeather
 import com.example.weather.util.ResultOf
 import kotlinx.coroutines.flow.flow
@@ -68,9 +69,11 @@ class WeatherRepository @Inject constructor(
         emit(ResultOf.LoadingEmptyLocal)
         try {
             val disasters = remoteDataSource.getDisasters(query)
+            Log.d("ALARM", "success request")
             emit(ResultOf.Success(disasters))
         } catch (e:Exception){
             emit(ResultOf.ErrorEmptyLocal(e))
+            Log.d("ALARM", e.message.toString())
         }
     }
 }
