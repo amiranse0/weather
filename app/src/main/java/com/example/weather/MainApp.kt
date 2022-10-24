@@ -25,6 +25,7 @@ class MainApp : Application(), Configuration.Provider{
         super.onCreate()
         appContext = applicationContext
     }
+
     companion object{
         lateinit var appContext: Context
 

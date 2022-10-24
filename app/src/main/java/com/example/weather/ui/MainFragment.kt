@@ -47,7 +47,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         initializingVariables(view)
 
-        primaryRequest()
+        //primaryRequest()
 
         getWeathers()
 

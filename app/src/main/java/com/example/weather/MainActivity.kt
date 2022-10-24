@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var dialogBinding: DialogNotificationCustomizationBinding
-    private lateinit var mapDialogBinding: MapLayoutBinding
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -63,28 +62,6 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.myToolbar)
 
-        backgroundUpdatingLocal()
-
-    }
-
-    private fun backgroundUpdatingLocal() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val updateLocalRequest = PeriodicWorkRequest.Builder(
-            BackgroundRequestWorker::class.java,
-            3,
-            TimeUnit.HOURS
-        ).setConstraints(constraints)
-            .build()
-
-        val updateLocalWorker = WorkManager.getInstance(this)
-        updateLocalWorker.enqueueUniquePeriodicWork(
-            NOTIFICATION_WORKER_ID,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            updateLocalRequest
-        )
     }
 
     private fun initializingVariables() {

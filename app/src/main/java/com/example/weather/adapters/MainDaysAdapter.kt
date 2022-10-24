@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.weather.R
 import com.example.weather.data.model.local.LocalForecast
 import com.example.weather.databinding.DayCardViewBinding
+import com.example.weather.util.urlToBitmap
 
 class MainDaysAdapter : ListAdapter<LocalForecast, MainDaysAdapter.DayViewHolder>(
     MainDayDiffCallback()
@@ -41,11 +42,9 @@ class MainDaysAdapter : ListAdapter<LocalForecast, MainDaysAdapter.DayViewHolder
         holder.binding.snowProbabilityTv.text =
             holder.context.getString(R.string.chance_probability_template, item.dailyChanceOfSnow)
 
-        Glide
-            .with(holder.context)
-            .load(item.conditionIcon)
-            .error(R.drawable.ic_baseline_broken_image_24)
-            .into(holder.binding.conditionIconTv)
+        holder.binding.conditionIconTv.load(item.conditionIcon){
+            error(R.drawable.ic_baseline_broken_image_24)
+        }
 
     }
 }

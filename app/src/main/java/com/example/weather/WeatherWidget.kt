@@ -25,6 +25,11 @@ class WeatherWidget : AppWidgetProvider() {
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
 
+    override fun onDisabled(context: Context?) {
+        super.onDisabled(context)
+        job.cancel()
+    }
+
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
 
