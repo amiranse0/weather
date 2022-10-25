@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/notification_layout"
-    android:background="@drawable/back">
+    android:background="@drawable/main_background">
 
     <TextView
         android:id="@+id/title_text"
@@ -50,6 +50,7 @@
         android:padding="@dimen/padding_size"
         android:text="@string/submit"
         android:textSize="@dimen/normal_text_size"
+        android:textColor="@color/black"
         android:background="@drawable/glass_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
