@@ -6,6 +6,9 @@
     <dimen name="padding_size">3dp</dimen>
     <dimen name="margin_size">5dp</dimen>
     <dimen name="header2">28sp</dimen>
+    <dimen name="small_padding">3dp</dimen>
+    <dimen name="card_view_margin_size">3dp</dimen>
+    <dimen name="small_text_size">11sp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information
