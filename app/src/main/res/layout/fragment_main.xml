@@ -27,9 +27,9 @@
         <include
             android:id="@+id/search_layout"
             layout="@layout/search_layout"
-            android:layout_margin="@dimen/margin_size"
+            android:layout_marginTop="@dimen/margin_size"
             android:padding="@dimen/padding_size"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/constraintLayout"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_height="wrap_content"
             android:layout_width="310dp" />
@@ -38,11 +38,10 @@
             android:id="@+id/refresh_button"
             android:src="@drawable/ic_baseline_refresh"
             android:padding="8dp"
-            android:layout_margin="@dimen/margin_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/glass_background"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toRightOf="@id/constraintLayout"
             app:layout_constraintBottom_toBottomOf="@id/search_layout"
             app:layout_constraintTop_toTopOf="@id/search_layout"/>
 

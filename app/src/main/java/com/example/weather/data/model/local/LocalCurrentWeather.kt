@@ -1,5 +1,6 @@
 package com.example.weather.data.model.local
 
+import android.graphics.Bitmap
 import androidx.room.ColumnInfo as CI
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -12,7 +13,7 @@ data class LocalCurrentWeather(
     @CI(name = "cloud")
     val cloud: Int,
     @CI(name = "condition_icon")
-    val conditionIcon:String,
+    val conditionIcon:Bitmap?,
     @CI(name = "condition")
     val condition:String, // condition text
     @CI(name = "feels_like_temp")

@@ -185,7 +185,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                             Log.d("TAG", "Loading empty")
                         }
                         is ResultOf.ErrorEmptyLocal -> {
-                            Log.d("TAG", "Error empty")
+                            Log.d("TAG", it.exception.message.toString())
                         }
                         is ResultOf.Success -> {
                             putDataOnViews(it.data)

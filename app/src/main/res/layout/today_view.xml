@@ -75,9 +75,9 @@
 
         <ImageView
             android:id="@+id/condition_icon_today"
-            imageUrl="@{localCurrentWeather.conditionIcon}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            bitmap="@{localCurrentWeather.conditionIcon}"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_margin="10dp"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="@+id/condition_today"

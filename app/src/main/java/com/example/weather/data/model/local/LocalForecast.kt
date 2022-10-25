@@ -1,5 +1,6 @@
 package com.example.weather.data.model.local
 
+import android.graphics.Bitmap
 import androidx.room.ColumnInfo as CI
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -17,7 +18,7 @@ data class LocalForecast(
     @CI(name = "average_visibility")
     val averageVisibility: Double,
     @CI(name = "condition_icon")
-    val conditionIcon:String,
+    val conditionIcon:Bitmap?,
     @CI(name = "condition")
     val condition: String,
     @CI(name = "daily_chance_of_rain")

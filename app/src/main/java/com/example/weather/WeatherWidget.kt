@@ -59,10 +59,10 @@ internal fun updateAppWidget(
     content: WidgetContent
 ) {
     val views = RemoteViews(context.packageName, R.layout.weather_widget)
-    views.setTextViewText(R.id.temp_widget_tv, content.temperature.toString())
+    views.setTextViewText(R.id.temp_widget_tv, content.temperature.toString()+"°")
     views.setTextViewText(R.id.date_widget_tv, content.date)
     views.setTextViewText(R.id.territory_name_tv, content.territoryName)
-    //TODO("update icon")
+    views.setImageViewBitmap(R.id.condition_icon_widget, content.icon)
 
     views.setOnClickPendingIntent(R.id.widget_root,
         getPendingIntentActivity(context))

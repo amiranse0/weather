@@ -1,5 +1,6 @@
 package com.example.weather.data.model.local
 
+import android.graphics.Bitmap
 import androidx.room.ColumnInfo as CI
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -16,8 +17,6 @@ data class LocalHour(
     val cloud: Int,
     @CI(name = "condition")
     val condition: String,
-    @CI(name = "condition_icon")
-    val conditionIcon: String,
     @CI(name = "feels_like_temp")
     val feelsLikeTemperature: Double,
     @CI(name = "humidity")

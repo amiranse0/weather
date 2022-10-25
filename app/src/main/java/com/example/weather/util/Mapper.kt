@@ -17,11 +17,11 @@ object Mapper {
         }
     }
 
-    fun currentWeatherRemoteToLocal(remoteWeather: RemoteWeather): LocalCurrentWeather {
+    suspend fun currentWeatherRemoteToLocal(remoteWeather: RemoteWeather): LocalCurrentWeather {
         return remoteWeather.let {
             LocalCurrentWeather(
                 cloud = it.remoteCurrent.cloud,
-                conditionIcon = it.remoteCurrent.condition.icon,
+                conditionIcon = urlToBitmap(it.remoteCurrent.condition.icon),
                 condition = it.remoteCurrent.condition.text,
                 feelsLikeTemperature = it.remoteCurrent.feelsLikeTemperature,
                 gust = it.remoteCurrent.gustInKph,
@@ -38,7 +38,7 @@ object Mapper {
         }
     }
 
-    fun forecastRemoteToLocal(remoteWeather: RemoteWeather, numberDay: Int): LocalForecast {
+    suspend fun forecastRemoteToLocal(remoteWeather: RemoteWeather, numberDay: Int): LocalForecast {
         return remoteWeather.let {
             val day = it.remoteForecast.remoteForecastDays[numberDay].remoteDay
             LocalForecast(
@@ -46,7 +46,7 @@ object Mapper {
                 averageHumidity = day.averageHumidity,
                 averageTemperature = day.averageTemperature,
                 averageVisibility = day.averageVisibility,
-                conditionIcon = day.condition.icon,
+                conditionIcon = urlToBitmap(day.condition.icon),
                 condition = day.condition.text,
                 dailyChanceOfRain = day.dailyChanceOfRain,
                 dailyChanceOfSnow = day.dailyChanceOfSnow,
@@ -72,7 +72,6 @@ object Mapper {
                 chanceOfSnow = hour.chanceOfSnow,
                 cloud = hour.cloud,
                 condition = hour.condition.text,
-                conditionIcon = hour.condition.icon,
                 feelsLikeTemperature = hour.feelsLikeTemperature,
                 humidity = hour.humidity,
                 timeDate = hour.time,
@@ -93,7 +92,7 @@ object Mapper {
         }
     }
 
-    fun mapRemoteDateToLocalTemplateDate(date: String): String {
+    private fun mapRemoteDateToLocalTemplateDate(date: String): String {
         return date.let {
             val calendar = Calendar.getInstance()
             val listDate: List<String> = it.split("-")
